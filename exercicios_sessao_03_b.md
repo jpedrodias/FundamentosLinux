@@ -145,3 +145,5 @@ Quais serão as permissões de um arquivo chamado text.txt depois de executar o 
 > * 5 (grupo)  => `5 = b101` pode ler, não pode escrever e pode executar
 > * 4 (outros) => `4 = b100` pode ler, não pode escrever nem executar
 
+
+# end of file
