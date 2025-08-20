@@ -178,3 +178,26 @@ $TTL    86400
 @       IN      NS      ubuntu-server.lablinux.pt.
 1       IN      PTR     ubuntu-server.lablinux.pt.
 ```
+
+
+```bash
+sudo nano /etc/bind/named.conf.loca
+```
+
+
+```text
+zone "lablinux.pt" IN { 
+    type master; 
+    file "/etc/bind/forward.lablinux.pt"; 
+};
+
+zone "5.168.192.in-addr.arpa" IN {
+  type master;
+  file "/etc/bind/reverse.lablinux.pt"
+}
+```
+
+
+```bash
+sudo systemctl restart bind9
+```
