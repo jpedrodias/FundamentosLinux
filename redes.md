@@ -113,6 +113,10 @@ sudo systemctl status isc-dhcp-server
 
 # Outros comandos:
 
+```bash
+cat /var/lib/dhcp/dhcpd.leases
+```
+
 
 Vê as rotas: ip route
 Testa DNS: 
@@ -123,3 +127,54 @@ dig A example.com
 *** 
 
 # Noutra máquina
+
+
+# Serviço DNS
+
+```bash
+sudo apt install bind9 bind9utils bind9-doc
+
+sudo cp /etc/bind/db.empty /etc/bind/forward.lablinux.pt
+sudo nano /etc/bind/forward.lablinux.pt
+```
+
+```text
+; BIND reverse data file for lablinux rfc1918 zone
+;
+$TTL    86400
+@       IN      SOA     ubuntu-server.lablinux.pt. admin.lablinux.pt. (
+                     2025082001         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                          86400 )       ; Negative Cache TTL
+;
+@       IN      NS      ubuntu-server.lablinux.pt.
+@       IN      A       192.168.5.1
+ubuntu-server IN A      192.168.5.1
+www     IN       A      192.168.5.1
+```
+
+
+
+
+```bash
+sudo cp /etc/bind/db.empty /etc/bind/reverse.lablinux.pt
+sudo nano /etc/bind/reverse.lablinux.pt
+```
+
+
+```text
+; BIND reverse data file for lablinux rfc1918 zone
+;
+$TTL    86400
+@       IN      SOA     ubuntu-server.lablinux.pt. admin.lablinux.pt. (
+                     2025082001         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                          86400 )       ; Negative Cache TTL
+;
+@       IN      NS      ubuntu-server.lablinux.pt.
+1       IN      PTR     ubuntu-server.lablinux.pt.
+```
