@@ -133,7 +133,9 @@ dig A example.com
 
 ```bash
 sudo apt install bind9 bind9utils bind9-doc
+```
 
+```bash
 sudo cp /etc/bind/db.empty /etc/bind/forward.lablinux.pt
 sudo nano /etc/bind/forward.lablinux.pt
 ```
@@ -181,23 +183,33 @@ $TTL    86400
 
 
 ```bash
-sudo nano /etc/bind/named.conf.loca
+sudo nano /etc/bind/named.conf.local
 ```
 
 
 ```text
 zone "lablinux.pt" IN { 
-    type master; 
-    file "/etc/bind/forward.lablinux.pt"; 
+    type master;
+    file "/etc/bind/forward.lablinux.pt";
 };
 
 zone "5.168.192.in-addr.arpa" IN {
   type master;
-  file "/etc/bind/reverse.lablinux.pt"
+  file "/etc/bind/reverse.lablinux.pt";
 }
 ```
 
 
 ```bash
 sudo systemctl restart bind9
+
+journalctl -xeu named.service
 ```
+
+
+dig -x 127.0.0.1
+dig google.pt
+
+
+sudo named-checkzone lablinux.pt /etc/bind/forward.lablinux.pt
+sudo named-checkzone 5.168.192.in-addr.arpa /etc/bind/reverse.lablinux.pt
