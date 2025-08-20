@@ -196,7 +196,7 @@ zone "lablinux.pt" IN {
 zone "5.168.192.in-addr.arpa" IN {
   type master;
   file "/etc/bind/reverse.lablinux.pt";
-}
+};
 ```
 
 
@@ -210,6 +210,40 @@ journalctl -xeu named.service
 dig -x 127.0.0.1
 dig google.pt
 
-
+```bash
 sudo named-checkzone lablinux.pt /etc/bind/forward.lablinux.pt
 sudo named-checkzone 5.168.192.in-addr.arpa /etc/bind/reverse.lablinux.pt
+```
+
+
+
+# ainda
+
+sudo nano /etc/dhcp/dhcpd.conf
+adicionar 
+  option domain-name-servers ubuntu-server.lablinux.pt;
+  option domain-name "lablinux.pt";
+
+
+sudo systemctl restart isc-dhcp-server
+sudo systemctl status isc-dhcp-server
+
+
+
+# ficheiro dos encaminhadores
+
+
+sudo nano /etc/bind/named.conf.options 
+
+options {
+    listen-on { 127.0.0.1; 192.168.5.1; }; 
+    //Permissões de consulta 
+    allow-query { localhost; 192.168.5.0/24; }; 
+    //Configurações de DNS recursivo 
+    recursion yes; 
+    forwarders { 
+      8.8.8.8; 
+      8.8.4.4; 
+    }; 
+    listen-on-v6 { none; }; 
+};
