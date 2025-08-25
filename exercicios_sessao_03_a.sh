@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Exercícios de grupos e utilizadores em Linux Ficheiro
 
 pausa() {
     echo -e "\033[31m[q] para sair\033[0m ou Enter para continuar..."
