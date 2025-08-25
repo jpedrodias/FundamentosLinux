@@ -32,6 +32,8 @@ limiter = Limiter(
     storage_uri="redis://redis:6379/0"
 )
 
+RANDOM_IMGS = listdir('./static/random.img/')
+
 
 # Disponibilizar token CSRF globalmente nos templates
 @app.context_processor
@@ -44,6 +46,7 @@ def inject_csrf_token():
 @app.route('/')
 @limiter.limit("15 per minute")
 def index():
+    global RANDOM_IMGS
     ip = get_real_ip()
     redis_url = app.config['SESSION_REDIS'].connection_pool.connection_kwargs
     
@@ -58,8 +61,7 @@ def index():
     count = r.get(f"visits:{ip}")
     visit_count = count.decode() if count else "1"
     
-    img_files = listdir('./static/random.img/')
-    img_file = choice(img_files)
+    img_file = choice(RANDOM_IMGS)
     return render_template('index.html', user_ip=ip, visit_count=visit_count, picture=img_file)
 
 index = limiter.limit("60 per minute")(index)
