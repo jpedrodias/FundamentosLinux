@@ -22,6 +22,7 @@ Em quais arquivos estão armazenados os atributos a seguir?
 * hash das senhas em `/etc/shadow`
 
 
+
 ## Questão 2.
 Como é possível obter uma lista dos logins ativos de seu sistema e uma contagem deles?
 
@@ -34,6 +35,7 @@ E para obter a contagem dos users ativos:
 ```bash
 $ who | wc -l
 ```
+
 
 
 ## Questão 3.
@@ -56,6 +58,7 @@ GECOS:              Emma Smith,42 Douglas St,555.555.5555
 Diretório inicial:  /home/emma
 Shell:              /bin/ksh
 ```
+
 
 
 ## Questão 4. 
@@ -114,6 +117,7 @@ dave:!::
   > Resposta: **60**
 
 
+
 ## 6. Crie um diretório chamado emptydir usando o comando mkdir emptydir. Em seguida, usando ls, liste as permissões do diretório emptydir.
 
 > Resposta:
@@ -122,6 +126,7 @@ $ mkdir emptydir
 $ ls -ld emptydir
 drwxrwxr-x 2 pedrodias pedrodias 4096 Aug 20 10:49 emptydir
 ```
+
 
 
 ## Questão 7.
@@ -137,6 +142,7 @@ $ chmod u+x,go-wx emptyfile
 ```
 
 
+
 ## Questão 8. 
 Quais serão as permissões de um arquivo chamado text.txt depois de executar o comando chmod 754 text.txt?
 
@@ -144,6 +150,7 @@ Quais serão as permissões de um arquivo chamado text.txt depois de executar o 
 > * 7 (user)   => `7 = b111` ou seja, pode ler, escrever e executar
 > * 5 (grupo)  => `5 = b101` pode ler, não pode escrever e pode executar
 > * 4 (outros) => `4 = b100` pode ler, não pode escrever nem executar
+
 
 
 # end of file
