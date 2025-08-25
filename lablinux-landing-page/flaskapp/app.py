@@ -1,3 +1,7 @@
+from random import choice
+from os import listdir
+
+
 from flask import Flask, render_template
 from flask_session import Session
 from flask_wtf.csrf import CSRFProtect
@@ -43,19 +47,20 @@ def index():
     ip = get_real_ip()
     redis_url = app.config['SESSION_REDIS'].connection_pool.connection_kwargs
     
-    print(redis_url)
     # Monta a URL do redis a partir dos kwargs
     host = redis_url.get('host', 'localhost')
     port = redis_url.get('port', 6379)
     db = redis_url.get('db', 0)
     url = f"redis://{host}:{port}/{db}"
     
-    print(url)
     r = redis.from_url(url)
     r.incr(f"visits:{ip}")  # incrementa o contador para o IP
     count = r.get(f"visits:{ip}")
     visit_count = count.decode() if count else "1"
-    return render_template('index.html', user_ip=ip, visit_count=visit_count)
+    
+    img_files = listdir('./static/random.img/')
+    img_file = choice(img_files)
+    return render_template('index.html', user_ip=ip, visit_count=visit_count, picture=img_file)
 
 index = limiter.limit("60 per minute")(index)
 
