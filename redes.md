@@ -291,3 +291,10 @@ sudo ip route del default
 sudo ip route add default via 192.168.5.254 dev enp0s8
 te show
 ```
+
+
+---
+no cliente
+```
+cat /etc/resolv.conf
+``
