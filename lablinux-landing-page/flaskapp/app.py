@@ -1,5 +1,5 @@
 from random import choice
-from os import listdir
+from os import listdir, path
 
 
 from flask import Flask, render_template
@@ -32,7 +32,7 @@ limiter = Limiter(
     storage_uri="redis://redis:6379/0"
 )
 
-app.config['RANDOM_IMGS'] = listdir(os.path.join(app.config['BASE_DIR'], 'static/random.img/'))
+app.config['RANDOM_IMGS'] = listdir(path.join(app.config['BASE_DIR'], 'static/random.img/'))
 
 
 # Disponibilizar token CSRF globalmente nos templates
