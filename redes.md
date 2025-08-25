@@ -258,6 +258,11 @@ options {
 ```
 
 
+```bash
+sudo named-checkconf
+```
+
+
 ***
 verificar qual o DNS que está configurado
 ```bash
@@ -289,7 +294,7 @@ ip route show
 ```bash
 sudo ip route del default
 sudo ip route add default via 192.168.5.254 dev enp0s8
-te show
+ip route show
 ```
 
 
