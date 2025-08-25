@@ -1,0 +1,7 @@
+Flask
+Flask-WTF
+Flask-Session
+Flask-Limiter
+redis
+msgpack
+gunicorn
