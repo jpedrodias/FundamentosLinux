@@ -46,7 +46,6 @@ def inject_csrf_token():
 @app.route('/')
 @limiter.limit("15 per minute")
 def index():
-    global RANDOM_IMGS
     ip = get_real_ip()
     redis_url = app.config['SESSION_REDIS'].connection_pool.connection_kwargs
     
