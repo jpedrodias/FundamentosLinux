@@ -220,22 +220,29 @@ sudo named-checkzone 5.168.192.in-addr.arpa /etc/bind/reverse.lablinux.pt
 
 # ainda
 
+```bash
 sudo nano /etc/dhcp/dhcpd.conf
+```
+
+
 adicionar 
+```text
   option domain-name-servers ubuntu-server.lablinux.pt;
   option domain-name "lablinux.pt";
 
 
 sudo systemctl restart isc-dhcp-server
 sudo systemctl status isc-dhcp-server
-
+```
 
 
 # ficheiro dos encaminhadores
 
-
+```bash
 sudo nano /etc/bind/named.conf.options 
+```
 
+```text
 options {
     listen-on { 127.0.0.1; 192.168.5.1; }; 
     //Permissões de consulta 
@@ -248,3 +255,39 @@ options {
     }; 
     listen-on-v6 { none; }; 
 };
+```
+
+
+***
+verificar qual o DNS que está configurado
+```bash
+sudo apt  install network-manager
+
+nmcli dev show | grep DNS
+```
+
+
+```bash
+# desliga 
+# enp0s3 - a placa de rede original
+# enp0s8 - a placa adicionada para o serviço
+sudo ip link set enp0s3 down
+
+sudo ip link set enpps3 down
+```
+
+
+
+---
+Trocar a route default
+```bash
+sudo ip route del default
+sudo ip route add default via 192.168.2.1 dev enp0s3
+ip route show
+```
+
+```bash
+sudo ip route del default
+sudo ip route add default via 192.168.5.254 dev enp0s8
+te show
+```
