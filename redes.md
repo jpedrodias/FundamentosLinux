@@ -286,6 +286,8 @@ sudo ip link set enpps3 down
 ---
 Trocar a route default
 ```bash
+resolvectl status
+
 sudo ip route del default
 sudo ip route add default via 192.168.2.1 dev enp0s3
 ip route show
@@ -300,6 +302,15 @@ ip route show
 
 ---
 no cliente
-```
+```bash
 cat /etc/resolv.conf
-``
+```
+
+
+***
+# Instalação do Firewall
+
+* [pfSense](https://www.pfsense.org/download/)
+* [OpenSense](https://opnsense.org/download/)
+
+
