@@ -1,3 +1,4 @@
+> **⚠️ Este ficheiro está em construção. O conteúdo pode ser alterado ou incompleto.**
 # Configurar a Interface
 
 
