@@ -38,8 +38,26 @@ def inject_csrf_token():
 
 
 @app.route('/')
+@limiter.limit("60 per minute")
 def index():
-    return render_template('index.html')
+    ip = get_real_ip()
+    redis_url = app.config['SESSION_REDIS'].connection_pool.connection_kwargs
+    
+    print(redis_url)
+    # Monta a URL do redis a partir dos kwargs
+    host = redis_url.get('host', 'localhost')
+    port = redis_url.get('port', 6379)
+    db = redis_url.get('db', 0)
+    url = f"redis://{host}:{port}/{db}"
+    
+    print(url)
+    r = redis.from_url(url)
+    r.incr(f"visits:{ip}")  # incrementa o contador para o IP
+    count = r.get(f"visits:{ip}")
+    visit_count = count.decode() if count else "1"
+    return render_template('index.html', user_ip=ip, visit_count=visit_count)
+
+index = limiter.limit("60 per minute")(index)
 
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'], host='0.0.0.0', port=5000)

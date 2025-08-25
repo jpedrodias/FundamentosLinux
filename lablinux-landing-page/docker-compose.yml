@@ -52,11 +52,16 @@ services:
     image: redis/redisinsight:latest
     container_name: redisinsight
     restart: unless-stopped
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDISINSIGHT_HOST=0.0.0.0
+      - REDISINSIGHT_ACCEPT_LICENSE=true
     depends_on:
       redis:
         condition: service_healthy
     ports:
-      - "8001:8001"
+      - "5540:5540"
     volumes:
       - redisinsight_data:/data
     networks:

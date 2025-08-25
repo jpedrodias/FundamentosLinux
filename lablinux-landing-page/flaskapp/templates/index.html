@@ -12,12 +12,30 @@
             <div class="col-md-8 text-center">
                 <h1 class="display-4 fw-bold mb-4">Bem-vindo ao LabLinux.pt</h1>
                 <p class="lead mb-4">A sua porta de entrada para aprender, experimentar e dominar Linux em ambiente de laboratório.</p>
-                <a href="#" class="btn btn-primary btn-lg">Saber mais</a>
+                <div id="output_btn">
+                    <a href="javascript:void(0);" class="btn btn-primary btn-lg" onclick="showUserIP();">Saber mais</a>
+                </div>
+
+                <div id="output_div" class="alert alert-info mt-4" style="display: none;">
+                    O seu IP é: <strong>{{ user_ip }}</strong><br>
+                    Número de visitas: <strong>{{ visit_count }}</strong>
+                </div>
+
+
             </div>
         </div>
     </div>
     <footer class="text-center mt-5 mb-3 text-muted">
         &copy; 2025 LabLinux.pt
     </footer>
+    <script>
+        function showUserIP() {
+            element = document.getElementById("output_btn");
+            element.style.display = "none";
+
+            element = document.getElementById("output_div");
+            element.style.display = "block";
+        }
+    </script>
 </body>
 </html>
