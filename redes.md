@@ -229,10 +229,20 @@ sudo nano /etc/dhcp/dhcpd.conf
 
 adicionar 
 ```text
+subnet 192.168.5.0 netmask 255.255.255.0 {
+  range 192.168.5.100 192.168.5.199;
   option domain-name-servers ubuntu-server.lablinux.pt;
+  #option domain-name-servers 192.168.5.1;
   option domain-name "lablinux.pt";
+  option subnet-mask 255.255.255.0;
+  option routers 192.168.5.254;
+  option broadcast-address 192.168.5.255;
+  default-lease-time 600;
+  max-lease-time 7200;
+}
+```
 
-
+```bash
 sudo systemctl restart isc-dhcp-server
 sudo systemctl status isc-dhcp-server
 ```
@@ -314,5 +324,7 @@ cat /etc/resolv.conf
 
 * [pfSense](https://www.pfsense.org/download/)
 * [OpenSense](https://opnsense.org/download/)
+
+Alterar a opção da LAN para os IPs
 
 
