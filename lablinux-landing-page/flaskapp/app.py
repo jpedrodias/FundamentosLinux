@@ -32,7 +32,7 @@ limiter = Limiter(
     storage_uri="redis://redis:6379/0"
 )
 
-RANDOM_IMGS = listdir('./static/random.img/')
+RANDOM_IMGS = listdir(os.path.join(app.config['BASE_DIR'], 'static/random.img/'))
 
 
 # Disponibilizar token CSRF globalmente nos templates
