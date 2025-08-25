@@ -190,7 +190,6 @@ $TTL    86400
 sudo nano /etc/bind/named.conf.local
 ```
 
-
 ```text
 zone "lablinux.pt" IN { 
     type master;

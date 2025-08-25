@@ -1,0 +1,11 @@
+//include "/etc/bind/zones.rfc1918";
+
+zone "lablinux.pt" IN {
+    type master;
+    file "/etc/bind/forward.lablinux.pt";
+};
+
+zone "5.168.192.in-addr.arpa" IN {
+  type master;
+  file "/etc/bind/reverse.lablinux.pt";
+};
