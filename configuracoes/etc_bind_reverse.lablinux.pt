@@ -1,0 +1,12 @@
+; BIND reverse data file for lablinux rfc1918 zone
+;
+$TTL    86400
+@       IN      SOA  ubuntu-server.lablinux.pt. admin.lablinux.pt. (
+                     2025082001         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                          86400 )       ; Negative Cache TTL
+;
+@       IN      NS      ubuntu-server.lablinux.pt.
+1       IN      PTR     ubuntu-server.lablinux.pt.
