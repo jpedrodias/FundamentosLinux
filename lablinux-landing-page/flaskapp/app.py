@@ -32,7 +32,7 @@ limiter = Limiter(
     storage_uri="redis://redis:6379/0"
 )
 
-RANDOM_IMGS = listdir(os.path.join(app.config['BASE_DIR'], 'static/random.img/'))
+app.config['RANDOM_IMGS'] = listdir(os.path.join(app.config['BASE_DIR'], 'static/random.img/'))
 
 
 # Disponibilizar token CSRF globalmente nos templates
@@ -61,7 +61,7 @@ def index():
     count = r.get(f"visits:{ip}")
     visit_count = count.decode() if count else "1"
     
-    img_file = choice(RANDOM_IMGS)
+    img_file = choice(app.config['RANDOM_IMGS'])
     return render_template('index.html', user_ip=ip, visit_count=visit_count, picture=img_file)
 
 index = limiter.limit("60 per minute")(index)
