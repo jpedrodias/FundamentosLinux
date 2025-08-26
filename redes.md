@@ -328,3 +328,15 @@ cat /etc/resolv.conf
 Alterar a opção da LAN para os IPs
 
 
+---
+# Firewall Ubuntu
+
+```bash
+sudo ufw reset # cuidado - desativa todas as regras
+sudo ufw enable
+sudo ufw allow 22  # ssh
+sudo ufw allow http 
+sudo ufw allow https
+
+sudo ufw status numbered 
+```
