@@ -51,7 +51,7 @@ network:
 ## Aplicar novas configurações
 E aplicar as novas definições
 ```bash
-sudo netplan applay
+sudo netplan apply
 ```
 
 ## Consultar resultado
