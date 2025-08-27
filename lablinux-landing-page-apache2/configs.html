@@ -1,259 +1,78 @@
 <!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configurações de Rede e Serviços</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container my-4">
-        <div class="alert alert-warning" role="alert">
-            <strong>⚠️ Este ficheiro está em construção.</strong>
-        </div>
-
-        <h1>Configurar a Interface</h1>
-
-        <h2>Consulta inicial</h2>
-        <p>Consultar a redes atuais</p>
-        <pre class="bg-light p-2 rounded"><code>ip a</code></pre>
-        <pre class="bg-light p-2 rounded"><code>2: enp0s3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether 08:00:27:44:09:51 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.2.126/24 metric 100 brd 192.168.2.255 scope global dynamic enp0s3
-       valid_lft 2607sec preferred_lft 2607sec
-    inet6 fe80::a00:27ff:fe44:951/64 scope link 
-       valid_lft forever preferred_lft forever
-3: enp0s8: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN group default qlen 1000
-    link/ether 08:00:27:2b:50:ab brd ff:ff:ff:ff:ff:ff</code></pre>
-
-        <h2>Nova configuração</h2>
-        <p>Editar o ficheiro para adicionar as conf da rede <code class="bg-light px-1 rounded">enp0s8</code></p>
-        <p>/etc/netplan/50-cloud-init.yaml</p>
-        <pre class="bg-light p-2 rounded"><code>cd /etc/netplan
-ls
-sudo nano 50-cloud-init.yaml</code></pre>
-        <p>E colocar estas instruções</p>
-        <pre class="bg-light p-2 rounded"><code>network:
-  version: 2
-  ethernets:
-    enp0s3:
-      dhcp4: true
-    enp0s8:
-      dhcp4: false
-      addresses: [192.168.5.1/24]
-      routes:
-        - to: default
-          via: 192.168.5.254
-      nameservers:
-        addresses: [192.168.5.1, 1.1.1.1, 8.8.8.8]</code></pre>
-
-        <h2>Aplicar novas configurações</h2>
-        <p>E aplicar as novas definições</p>
-        <pre class="bg-light p-2 rounded"><code>sudo netplan apply</code></pre>
-
-        <h2>Consultar resultado</h2>
-        <pre class="bg-light p-2 rounded"><code>ip a</code></pre>
-        <pre class="bg-light p-2 rounded"><code>3: enp0s8: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether 08:00:27:2b:50:ab brd ff:ff:ff:ff:ff:ff
-    inet 192.168.5.1/24 brd 192.168.5.255 scope global enp0s8
-       valid_lft forever preferred_lft forever
-    inet6 fe80::a00:27ff:fe2b:50ab/64 scope link 
-       valid_lft forever preferred_lft forever</code></pre>
-
-        <hr>
-
-        <h1>Adicionar um servidor de DHCP</h1>
-
-        <h2>Instalação</h2>
-        <pre class="bg-light p-2 rounded"><code>sudo ip link enp0s8 down
-sudo ip link enp0s8 up
-sudo apt install isc-dhcp-server</code></pre>
-
-        <hr>
-
-        <h2>Configuração</h2>
-        <pre class="bg-light p-2 rounded"><code>sudo nano /etc/default/isc-dhcp-server</code></pre>
-        <pre class="bg-light p-2 rounded"><code>INTERFACESv4="enp0s8"
-INTERFACESv6=""</code></pre>
-        <pre class="bg-light p-2 rounded"><code>sudo nano /etc/dhcp/dhcpd.conf</code></pre>
-        <pre class="bg-light p-2 rounded"><code>subnet 192.168.5.0 netmask 255.255.255.0 {
-  range 192.168.5.100 192.168.5.199;
-  option domain-name-servers ubuntu-server.lablinux.pt;
-  option domain-name "lablinux.pt";
-  option subnet-mask 255.255.255.0;
-  option routers 192.168.5.254;
-  option broadcast-address 192.168.5.255;
-  default-lease-time 600;
-  max-lease-time 7200;
-}</code></pre>
-        <pre class="bg-light p-2 rounded"><code>sudo systemctl restart isc-dhcp-server
-sudo systemctl status isc-dhcp-server</code></pre>
-
-        <h2>Outros comandos:</h2>
-        <pre class="bg-light p-2 rounded"><code>cat /var/lib/dhcp/dhcpd.leases</code></pre>
-        <p>Vê as rotas: ip route<br>Testa DNS:<br>resolvectl status<br>dig A example.com</p>
-
-        <hr>
-
-        <h1>Noutra máquina</h1>
-
-        <h1>Serviço DNS</h1>
-        <pre class="bg-light p-2 rounded"><code>sudo apt install bind9 bind9utils bind9-doc</code></pre>
-        <pre class="bg-light p-2 rounded"><code>sudo cp /etc/bind/db.empty /etc/bind/forward.lablinux.pt
-sudo nano /etc/bind/forward.lablinux.pt</code></pre>
-        <pre class="bg-light p-2 rounded"><code>; BIND reverse data file for lablinux rfc1918 zone
-;
-$TTL    86400
-@       IN      SOA     ubuntu-server.lablinux.pt. admin.lablinux.pt. (
-                     2025082001         ; Serial
-                         604800         ; Refresh
-                          86400         ; Retry
-                        2419200         ; Expire
-                          86400 )       ; Negative Cache TTL
-;
-@       IN      NS      ubuntu-server.lablinux.pt.
-@       IN      A       192.168.5.1
-ubuntu-server IN A      192.168.5.1
-www     IN       A      192.168.5.1</code></pre>
-        <pre class="bg-light p-2 rounded"><code>sudo cp /etc/bind/db.empty /etc/bind/reverse.lablinux.pt
-sudo nano /etc/bind/reverse.lablinux.pt</code></pre>
-        <pre class="bg-light p-2 rounded"><code>; BIND reverse data file for lablinux rfc1918 zone
-;
-$TTL    86400
-@       IN      SOA     ubuntu-server.lablinux.pt. admin.lablinux.pt. (
-                     2025082001         ; Serial
-                         604800         ; Refresh
-                          86400         ; Retry
-                        2419200         ; Expire
-                          86400 )       ; Negative Cache TTL
-;
-@       IN      NS      ubuntu-server.lablinux.pt.
-1       IN      PTR     ubuntu-server.lablinux.pt.</code></pre>
-        <pre class="bg-light p-2 rounded"><code>sudo nano /etc/bind/named.conf.local</code></pre>
-        <pre class="bg-light p-2 rounded"><code>zone "lablinux.pt" IN { 
-    type master;
-    file "/etc/bind/forward.lablinux.pt";
-};
-
-zone "5.168.192.in-addr.arpa" IN {
-  type master;
-  file "/etc/bind/reverse.lablinux.pt";
-};</code></pre>
-        <pre class="bg-light p-2 rounded"><code>sudo systemctl restart bind9
-
-journalctl -xeu named.service</code></pre>
-        <pre class="bg-light p-2 rounded"><code>dig -x 127.0.0.1
-dig google.pt</code></pre>
-        <pre class="bg-light p-2 rounded"><code>sudo named-checkzone lablinux.pt /etc/bind/forward.lablinux.pt
-sudo named-checkzone 5.168.192.in-addr.arpa /etc/bind/reverse.lablinux.pt</code></pre>
-
-        <h2>ainda</h2>
-        <pre class="bg-light p-2 rounded"><code>sudo nano /etc/dhcp/dhcpd.conf</code></pre>
-        <p>adicionar</p>
-        <pre class="bg-light p-2 rounded"><code>subnet 192.168.5.0 netmask 255.255.255.0 {
-  range 192.168.5.100 192.168.5.199;
-  option domain-name-servers ubuntu-server.lablinux.pt;
-  #option domain-name-servers 192.168.5.1;
-  option domain-name "lablinux.pt";
-  option subnet-mask 255.255.255.0;
-  option routers 192.168.5.254;
-  option broadcast-address 192.168.5.255;
-  default-lease-time 600;
-  max-lease-time 7200;
-}</code></pre>
-        <pre class="bg-light p-2 rounded"><code>sudo systemctl restart isc-dhcp-server
-sudo systemctl status isc-dhcp-server</code></pre>
-
-        <h2>ficheiro dos encaminhadores</h2>
-        <pre><code>sudo nano /etc/bind/named.conf.options</code></pre>
-        <pre class="bg-light p-2 rounded"><code>options {
-    listen-on { 127.0.0.1; 192.168.5.1; }; 
-    //Permissões de consulta 
-    allow-query { localhost; 192.168.5.0/24; }; 
-    //Configurações de DNS recursivo 
-    recursion yes; 
-    forwarders { 
-      8.8.8.8; 
-      8.8.4.4; 
-    }; 
-    listen-on-v6 { none; }; 
-};</code></pre>
-        <pre><code>sudo named-checkconf</code></pre>
-
-        <hr>
-        <p>verificar qual o DNS que está configurado</p>
-        <pre><code>sudo apt  install network-manager
-
-nmcli dev show | grep DNS</code></pre>
-        <pre class="bg-light p-2 rounded"><code># desliga 
-# enp0s3 - a placa de rede original
-# enp0s8 - a placa adicionada para o serviço
-sudo ip link set enp0s3 down
-
-sudo ip link set enpps3 down</code></pre>
-
-        <hr>
-        <p>Trocar a route default</p>
-        <pre class="bg-light p-2 rounded"><code>resolvectl status
-
-sudo ip route del default
-sudo ip route add default via 192.168.2.1 dev enp0s3
-ip route show</code></pre>
-        <pre><code>sudo ip route del default
-sudo ip route add default via 192.168.5.254 dev enp0s8
-ip route show</code></pre>
-
-        <hr>
-        <p>no cliente</p>
-        <pre><code>cat /etc/resolv.conf</code></pre>
-
-        <hr>
-
-        <h1>Instalação do Firewall</h1>
-        <ul>
-            <li><a href="https://www.pfsense.org/download/">pfSense</a></li>
-            <li><a href="https://opnsense.org/download/">OpenSense</a></li>
-        </ul>
-        <p>Alterar a opção da LAN para os IPs</p>
-
-        <hr>
-
-        <h1>Firewall Ubuntu</h1>
-        <pre class="bg-light p-2 rounded"><code>sudo ufw reset # cuidado - desativa todas as regras
-sudo ufw enable
-sudo ufw allow 22  # ssh
-sudo ufw allow http 
-sudo ufw allow https
-
-sudo ufw status numbered</code></pre>
-
-        <hr>
-
-        <h1>Apache</h1>
-        <pre class="bg-light p-2 rounded"><code>sudo apt install apache2 -y
-
-sudo a2enmod ssl
-systemctl start apache2
-systemctl enable apache2
-systemctl status apache2
-
-curl http://127.0.0.1
 
 
-sudo a2enmod ssl
-sudo a2enmod headers
-sudo a2ensite default-ssl
+<div class="row g-3 mt-1">
+<div class="col-md-6">
+<div class="card h-100">
+<div class="card-body">
+<h6>Rede</h6>
+<pre class="cmd"><code>ip a
+ip route show
+resolvectl status
+nmcli dev show | grep -i dns</code></pre>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="card h-100">
+<div class="card-body">
+<h6>Cliente (na LAN)</h6>
+<pre class="cmd"><code>ip a
+ip route
+cat /etc/resolv.conf
+ping 192.168.5.1
+ping ubuntu-server.lablinux.pt
+curl -I http://ubuntu-server.lablinux.pt</code></pre>
+</div>
+</div>
+</div>
+</div>
 
 
-sudo apache2ctl configtest
-sudo systemctl restart apache2
+<div class="callout p-3 rounded mt-3">
+<strong>Rollback rápido:</strong> se perder conectividade, ligue um ecrã/console local e remova alterações recentes de <span class="mono">/etc/netplan/50-cloud-init.yaml</span>; depois execute <span class="mono">sudo netplan apply</span>.
+</div>
+</section>
 
 
-sudo ufw enable
-sudo ufw app list 
-sudo ufw app info "Apache Full"
+<section id="appendix" class="mb-5">
+<h2 class="h4">Apêndice: Comandos úteis</h2>
+<pre class="cmd"><code># Serviços
+systemctl status bind9 isc-dhcp-server apache2 --no-pager
 
-sudo ufw allow in "Apache Full"</code></pre>
-    </div>
+
+# Monitorizar logs (noutra shell)
+sudo journalctl -f -u bind9 -u isc-dhcp-server -u apache2
+
+
+# Ferramentas DNS
+resolvectl status
+nslookup ubuntu-server.lablinux.pt 192.168.5.1
+
+
+# Rede
+ip -c a
+ip -c route
+
+
+# UFW
+sudo ufw status verbose
+
+
+# Correções comuns
+sudo ip link set enp0s3 up
+sudo ip link set enp0s8 up</code></pre>
+</section>
+
+
+<footer class="text-muted small border-top pt-3">
+Última atualização: 27‑08‑2025 • Elaborado em PT‑PT • Substitua valores pelo seu contexto.
+</footer>
+</main>
+</div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
