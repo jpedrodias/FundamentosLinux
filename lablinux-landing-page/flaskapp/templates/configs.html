@@ -39,6 +39,15 @@
 <!-- - enp0s3: Conectada à rede externa (DHCP) -->
 <!-- - enp0s8: Rede interna (IP estático 192.168.5.1) para serviços locais -->
 <div class="container my-4">
+  <!-- Informações do usuário -->
+  <div class="alert alert-info">
+    <h5>👤 Informações da Sessão</h5>
+    <p><strong>Seu IP:</strong> {{ user_ip }}</p>
+    <p><strong>Número de visitas:</strong> {{ visit_count }}</p>
+    <hr>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary btn-sm">← Voltar ao início</a>
+  </div>
+
   <div class="alert alert-info">
     <h4>📋 Sobre este guia</h4>
     <p>Este documento configura um servidor Ubuntu com serviços essenciais de rede. 

@@ -18,6 +18,30 @@ def get_real_ip():
         ip_address = request.access_route[-1] if request.access_route else request.remote_addr
     return ip_address
 
+def register_ip_visit(app):
+    """
+    Função abstraída para registrar visita de IP e obter contador
+    Retorna um dicionário com ip e visit_count
+    """
+    ip = get_real_ip()
+    redis_url = app.config['SESSION_REDIS'].connection_pool.connection_kwargs
+    
+    # Monta a URL do redis a partir dos kwargs
+    host = redis_url.get('host', 'localhost')
+    port = redis_url.get('port', 6379)
+    db = redis_url.get('db', 0)
+    url = f"redis://{host}:{port}/{db}"
+    
+    r = redis.from_url(url)
+    r.incr(f"visits:{ip}")  # incrementa o contador para o IP
+    count = r.get(f"visits:{ip}")
+    visit_count = count.decode() if count else "1"
+    
+    return {
+        'ip': ip,
+        'visit_count': visit_count
+    }
+
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')  # Use DevelopmentConfig by default  
 
@@ -46,29 +70,20 @@ def inject_csrf_token():
 @app.route('/')
 @limiter.limit("15 per minute")
 def index():
-    ip = get_real_ip()
-    redis_url = app.config['SESSION_REDIS'].connection_pool.connection_kwargs
-    
-    # Monta a URL do redis a partir dos kwargs
-    host = redis_url.get('host', 'localhost')
-    port = redis_url.get('port', 6379)
-    db = redis_url.get('db', 0)
-    url = f"redis://{host}:{port}/{db}"
-    
-    r = redis.from_url(url)
-    r.incr(f"visits:{ip}")  # incrementa o contador para o IP
-    count = r.get(f"visits:{ip}")
-    visit_count = count.decode() if count else "1"
+    # Registrar visita e obter dados do IP
+    visit_data = register_ip_visit(app)
     
     img_file = choice(app.config['RANDOM_IMGS'])
-    return render_template('index.html', user_ip=ip, visit_count=visit_count, picture=img_file)
-
-index = limiter.limit("60 per minute")(index)
+    return render_template('index.html', user_ip=visit_data['ip'], visit_count=visit_data['visit_count'], picture=img_file)
 
 
 @app.route('/configs.html')
+@limiter.limit("15 per minute")
 def configs():
-    return render_template('configs.html')
+    # Registrar visita e obter dados do IP
+    visit_data = register_ip_visit(app)
+    
+    return render_template('configs.html', user_ip=visit_data['ip'], visit_count=visit_data['visit_count'])
 
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'], host='0.0.0.0', port=5000)
