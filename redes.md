@@ -1,4 +1,4 @@
-> **⚠️ Este ficheiro está em construção. O conteúdo pode ser alterado ou incompleto.**
+> **⚠️ Este ficheiro está em construção.**
 # Configurar a Interface
 
 
