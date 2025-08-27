@@ -346,6 +346,8 @@ sudo ufw status numbered
 ---
 # Apache
 
+
+```bash
 sudo apt install apache2 -y
 
 sudo a2enmod ssl
@@ -353,9 +355,7 @@ systemctl start apache2
 systemctl enable apache2
 systemctl status apache2
 
-
 curl http://127.0.0.1
-
 
 
 sudo a2enmod ssl
@@ -363,10 +363,8 @@ sudo a2enmod headers
 sudo a2ensite default-ssl
 
 
-
 sudo apache2ctl configtest
 sudo systemctl restart apache2
-
 
 
 sudo ufw enable
@@ -374,3 +372,4 @@ sudo ufw app list
 sudo ufw app info "Apache Full"
 
 sudo ufw allow in "Apache Full"
+```
