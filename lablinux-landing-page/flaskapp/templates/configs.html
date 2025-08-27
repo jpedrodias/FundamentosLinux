@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<title>Configurações de Rede e Serviços Ubuntu</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<style>
+.copy-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    z-index: 10;
+}
+.copy-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.copy-btn.copied {
+    background: rgba(25, 135, 84, 0.8);
+    color: white;
+}
+.pre-container {
+    position: relative;
+}
+</style>
+</head>
+<body>
+<!-- ⚠️ Este ficheiro está em construção. -->
+<!-- Guia completo para configuração de rede, DHCP, DNS, Firewall e Apache em Ubuntu Server -->
+<!-- Este guia configura um servidor Ubuntu com duas interfaces de rede: -->
+<!-- - enp0s3: Conectada à rede externa (DHCP) -->
+<!-- - enp0s8: Rede interna (IP estático 192.168.5.1) para serviços locais -->
+<div class="container my-4">
+  <div class="alert alert-info">
+    <h4>📋 Sobre este guia</h4>
+    <p>Este documento configura um servidor Ubuntu com serviços essenciais de rede. 
+    Execute os comandos por ordem e teste cada seção antes de continuar.</p>
+    <p><strong>Serviços que serão configurados:</strong></p>
+    <ul>
+      <li>🔧 <strong>Rede:</strong> Duas interfaces (externa DHCP, interna estática)</li>
+      <li>📡 <strong>DHCP:</strong> Distribuição automática de IPs na rede interna</li>
+      <li>🌐 <strong>DNS:</strong> Resolução de nomes para o domínio lablinux.pt</li>
+      <li>🔥 <strong>Firewall:</strong> UFW para proteção básica</li>
+      <li>🌍 <strong>Web:</strong> Apache com SSL para hospedar sites</li>
+    </ul>
+  </div>
+  <h1 class="mb-3">Configurar a Interface</h1>
+  <p class="text-muted">Esta seção guia a configuração inicial das interfaces de rede no servidor Ubuntu.</p>
+  <div class="alert alert-warning">
+    <strong>Nota:</strong> Este guia assume que você tem duas interfaces de rede. 
+    Ajuste os nomes das interfaces (enp0s3, enp0s8) conforme sua configuração real.
+  </div>
+
+  <h2>Consulta inicial</h2>
+  <p><!-- Verifica as interfaces de rede atuais para entender o estado inicial --></p>
+  <p><em>Este comando mostra todas as interfaces de rede e seus status atuais.</em></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>ip a</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>2: enp0s3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:44:09:51 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.2.126/24 metric 100 brd 192.168.2.255 scope global dynamic enp0s3
+       valid_lft 2607sec preferred_lft 2607sec
+    inet6 fe80::a00:27ff:fe44:951/64 scope link 
+       valid_lft forever preferred_lft forever
+3: enp0s8: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 08:00:27:2b:50:ab brd ff:ff:ff:ff:ff:ff</code></pre>
+
+  <h2>Nova configuração</h2>
+  <p><!-- Edita o arquivo de configuração do Netplan para adicionar a segunda interface de rede --></p>
+  <p><em>Configuramos duas interfaces:</em></p>
+  <ul>
+    <li><strong>enp0s3:</strong> Mantém DHCP para conexão externa</li>
+    <li><strong>enp0s8:</strong> IP estático para rede interna (192.168.5.1/24)</li>
+  </ul>
+  <div class="alert alert-info">
+    <strong>Dica:</strong> O gateway 192.168.5.254 deve ser o endereço do seu router/firewall na rede interna.
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>cd /etc/netplan
+ls
+sudo nano 50-cloud-init.yaml</code></pre>
+  <p>Adicione as seguintes instruções ao arquivo <code>50-cloud-init.yaml</code>:</p>
+  <pre class="bg-dark text-light p-3 rounded"><code>network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: true
+    enp0s8:
+      dhcp4: false
+      addresses: [192.168.5.1/24]
+      routes:
+        - to: default
+          via: 192.168.5.254
+      nameservers:
+        addresses: [192.168.5.1, 1.1.1.1, 8.8.8.8]</code></pre>
+
+  <h2>Aplicar novas configurações</h2>
+  <p><!-- Aplica as mudanças na configuração de rede --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo netplan apply</code></pre>
+
+  <h2>Consultar resultado</h2>
+  <p><!-- Verifica se a configuração foi aplicada corretamente --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>ip a</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>3: enp0s8: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:2b:50:ab brd ff:ff:ff:ff:ff:ff
+    inet 192.168.5.1/24 brd 192.168.5.255 scope global enp0s8
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe2b:50ab/64 scope link 
+       valid_lft forever preferred_lft forever</code></pre>
+
+  <hr>
+  <h1>Adicionar um servidor de DHCP</h1>
+  <p class="text-muted">Configura um servidor DHCP para atribuir IPs automaticamente na rede interna.</p>
+  <div class="alert alert-success">
+    <strong>Objetivo:</strong> Os clientes na rede 192.168.5.0/24 receberão IPs automaticamente do range 192.168.5.100-199.
+  </div>
+
+  <h2>Instalação</h2>
+  <p><!-- Reinicia a interface e instala o pacote do servidor DHCP --></p>
+  <p><em>Antes de instalar, garantimos que a interface está ativa.</em></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo ip link enp0s8 down
+sudo ip link enp0s8 up
+sudo apt install isc-dhcp-server</code></pre>
+
+  <h2>Configuração</h2>
+  <p><!-- Edita os arquivos de configuração do DHCP para definir a interface e o range de IPs --></p>
+  <p><em>Primeiro, especificamos qual interface o DHCP deve escutar:</em></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/default/isc-dhcp-server</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>INTERFACESv4="enp0s8"
+INTERFACESv6=""</code></pre>
+  <p><em>Depois, configuramos o range de IPs e opções de rede:</em></p>
+  <div class="alert alert-warning">
+    <strong>Atenção:</strong> Ajuste o range de IPs conforme sua rede. O DNS deve apontar para este servidor (192.168.5.1).
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>subnet 192.168.5.0 netmask 255.255.255.0 {
+  range 192.168.5.100 192.168.5.199;
+  option domain-name-servers ubuntu-server.lablinux.pt;
+  option domain-name "lablinux.pt";
+  option subnet-mask 255.255.255.0;
+  option routers 192.168.5.254;
+  option broadcast-address 192.168.5.255;
+  default-lease-time 600;
+  max-lease-time 7200;
+}</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo systemctl restart isc-dhcp-server
+sudo systemctl status isc-dhcp-server</code></pre>
+
+  <h2>Outros comandos</h2>
+  <p><!-- Verifica leases atribuídos e testa conectividade --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>cat /var/lib/dhcp/dhcpd.leases</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>ip route
+resolvectl status
+dig A example.com</code></pre>
+
+  <hr>
+  <h1>Serviço DNS</h1>
+  <p class="text-muted">Instala e configura o BIND9 para resolução de nomes de domínio.</p>
+  <div class="alert alert-info">
+    <strong>Por que DNS?</strong> Permite acessar serviços por nome (ex: ubuntu-server.lablinux.pt) 
+    em vez de apenas por IP. Essencial para redes corporativas.
+  </div>
+
+  <h2>Instalação</h2>
+  <p><!-- Instala os pacotes necessários para o BIND9 --></p>
+  <p><em>Instalamos BIND9 com ferramentas de diagnóstico e documentação.</em></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo apt install bind9 bind9utils bind9-doc</code></pre>
+
+  <h2>Configuração de zona direta</h2>
+  <p><!-- Cria e edita o arquivo de zona direta para o domínio lablinux.pt --></p>
+  <p><em>A zona direta mapeia nomes para IPs. O @ representa o domínio raiz (lablinux.pt).</em></p>
+  <div class="alert alert-info">
+    <strong>Sobre os registros:</strong>
+    <ul>
+      <li><strong>SOA:</strong> Start of Authority - informa quem é responsável pelo domínio</li>
+      <li><strong>NS:</strong> Name Server - aponta para o servidor DNS</li>
+      <li><strong>A:</strong> Address - mapeia nomes para IPs</li>
+    </ul>
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo cp /etc/bind/db.empty /etc/bind/forward.lablinux.pt
+sudo nano /etc/bind/forward.lablinux.pt</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>; BIND reverse data file for lablinux rfc1918 zone
+;
+$TTL    86400
+@       IN      SOA     ubuntu-server.lablinux.pt. admin.lablinux.pt. (
+                     2025082001         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                          86400 )       ; Negative Cache TTL
+;
+@       IN      NS      ubuntu-server.lablinux.pt.
+@       IN      A       192.168.5.1
+ubuntu-server IN A      192.168.5.1
+www     IN       A      192.168.5.1</code></pre>
+
+  <h2>Configuração de zona reversa</h2>
+  <p><!-- Cria e edita o arquivo de zona reversa --></p>
+  <p><em>A zona reversa mapeia IPs para nomes. Essencial para resolução reversa de DNS.</em></p>
+  <div class="alert alert-info">
+    <strong>Nota:</strong> O arquivo reverso usa o formato IP invertido + .in-addr.arpa
+    (ex: 192.168.5.1 → 1.5.168.192.in-addr.arpa)
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo cp /etc/bind/db.empty /etc/bind/reverse.lablinux.pt
+sudo nano /etc/bind/reverse.lablinux.pt</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>; BIND reverse data file for lablinux rfc1918 zone
+;
+$TTL    86400
+@       IN      SOA     ubuntu-server.lablinux.pt. admin.lablinux.pt. (
+                     2025082001         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                          86400 )       ; Negative Cache TTL
+;
+@       IN      NS      ubuntu-server.lablinux.pt.
+1       IN      PTR     ubuntu-server.lablinux.pt.</code></pre>
+
+  <h2>Configuração do named.conf.local</h2>
+  <p><!-- Adiciona as zonas ao arquivo de configuração local --></p>
+  <p><em>Este arquivo informa ao BIND9 quais zonas ele deve gerenciar e onde encontrar os arquivos de zona.</em></p>
+  <div class="alert alert-info">
+    <strong>Tipos de zona:</strong>
+    <ul>
+      <li><strong>master:</strong> Este servidor é a fonte autoritativa para a zona</li>
+      <li><strong>slave:</strong> Sincroniza com outro servidor DNS</li>
+    </ul>
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/bind/named.conf.local</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>zone "lablinux.pt" IN { 
+    type master;
+    file "/etc/bind/forward.lablinux.pt";
+};
+
+zone "5.168.192.in-addr.arpa" IN {
+  type master;
+  file "/etc/bind/reverse.lablinux.pt";
+};</code></pre>
+
+  <h2>Iniciar e testar o serviço</h2>
+  <p><!-- Reinicia o BIND9 e testa a resolução --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo systemctl restart bind9
+journalctl -xeu named.service</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>dig -x 127.0.0.1
+dig google.pt</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo named-checkzone lablinux.pt /etc/bind/forward.lablinux.pt
+sudo named-checkzone 5.168.192.in-addr.arpa /etc/bind/reverse.lablinux.pt</code></pre>
+
+  <h2>Configuração adicional DHCP</h2>
+  <p><!-- Atualiza a configuração DHCP para incluir o servidor DNS --></p>
+  <p><em>Atualizamos o DHCP para informar aos clientes qual servidor DNS usar para resolução de nomes.</em></p>
+  <div class="alert alert-success">
+    <strong>Resultado:</strong> Clientes receberão automaticamente o IP, máscara de rede, 
+    gateway E servidor DNS via DHCP.
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/dhcp/dhcpd.conf</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>subnet 192.168.5.0 netmask 255.255.255.0 {
+  range 192.168.5.100 192.168.5.199;
+  option domain-name-servers ubuntu-server.lablinux.pt;
+  #option domain-name-servers 192.168.5.1;
+  option domain-name "lablinux.pt";
+  option subnet-mask 255.255.255.0;
+  option routers 192.168.5.254;
+  option broadcast-address 192.168.5.255;
+  default-lease-time 600;
+  max-lease-time 7200;
+}</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo systemctl restart isc-dhcp-server
+sudo systemctl status isc-dhcp-server</code></pre>
+
+  <h2>Configuração dos encaminhadores DNS</h2>
+  <p><!-- Configura os encaminhadores para consultas externas --></p>
+  <p><em>Quando o BIND9 não conhece uma resposta, ele encaminha a consulta para os servidores externos (Google DNS).</em></p>
+  <div class="alert alert-info">
+    <strong>Por que encaminhadores?</strong> Permite resolver nomes externos (como google.com) 
+    mesmo que seu servidor DNS só conheça o domínio local.
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/bind/named.conf.options</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>options {
+    listen-on { 127.0.0.1; 192.168.5.1; }; 
+    //Permissões de consulta 
+    allow-query { localhost; 192.168.5.0/24; }; 
+    //Configurações de DNS recursivo 
+    recursion yes; 
+    forwarders { 
+      8.8.8.8; 
+      8.8.4.4; 
+    }; 
+    listen-on-v6 { none; }; 
+};</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo named-checkconf</code></pre>
+
+  <h2>Verificar DNS configurado</h2>
+  <p><!-- Instala o NetworkManager e verifica o DNS --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo apt install network-manager
+nmcli dev show | grep DNS</code></pre>
+
+  <h2>Desligar interfaces de rede</h2>
+  <p><!-- Desliga interfaces para testes ou reconfiguração --></p>
+  <p><em>Útil para troubleshooting ou quando você precisa reconfigurar interfaces sem reiniciar o sistema.</em></p>
+  <div class="alert alert-warning">
+    <strong>Atenção:</strong> Desligar a interface externa pode cortar sua conexão SSH. 
+    Tenha cuidado ao executar remotamente!
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo ip link set enp0s3 down
+sudo ip link set enpps3 down</code></pre>
+
+  <h2>Trocar a route default</h2>
+  <p><!-- Altera a rota padrão para diferentes interfaces --></p>
+  <p><em>Permite controlar qual interface é usada como gateway padrão para tráfego externo.</em></p>
+  <div class="alert alert-info">
+    <strong>Exemplo de uso:</strong> Use a interface externa para internet geral, 
+    mas mude temporariamente para testes na rede interna.
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>resolvectl status
+sudo ip route del default
+sudo ip route add default via 192.168.2.1 dev enp0s3
+ip route show
+sudo ip route del default
+sudo ip route add default via 192.168.5.254 dev enp0s8
+ip route show</code></pre>
+
+  <h2>No cliente</h2>
+  <p><!-- Verifica a configuração de DNS no cliente --></p>
+  <p><em>Este comando verifica se o cliente está usando o servidor DNS correto (deve mostrar 192.168.5.1).</em></p>
+  <div class="alert alert-info">
+    <strong>Para testar no cliente:</strong>
+    <ul>
+      <li>Conecte um dispositivo à rede interna (porta da interface enp0s8)</li>
+      <li>Verifique se recebeu IP do range 192.168.5.100-199</li>
+      <li>Teste resolução DNS: <code>ping ubuntu-server.lablinux.pt</code></li>
+    </ul>
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>cat /etc/resolv.conf</code></pre>
+
+  <hr>
+  <h1>Instalação do Firewall</h1>
+  <p class="text-muted">Opções para firewalls externos e configuração do UFW no Ubuntu.</p>
+  <div class="alert alert-danger">
+    <strong>Segurança:</strong> O firewall é crucial para proteger seu servidor. 
+    Nunca desabilite completamente sem uma boa razão.
+  </div>
+  <p><em>Para firewalls completos, considere:</em></p>
+  <ul>
+    <li><a href="https://www.pfsense.org/download/" target="_blank">pfSense</a> - Firewall/router completo</li>
+    <li><a href="https://opnsense.org/download/" target="_blank">OpenSense</a> - Alternativa open-source</li>
+  </ul>
+  <p><!-- Altere a opção da LAN para os IPs conforme necessário --></p>
+
+  <h2>Firewall Ubuntu</h2>
+  <p><!-- Configura o UFW para permitir portas essenciais --></p>
+  <p><em>UFW (Uncomplicated Firewall) é mais simples que iptables direto.</em></p>
+  <div class="alert alert-warning">
+    <strong>Cuidado:</strong> <code>ufw reset</code> remove todas as regras. Tenha cuidado em produção!
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo ufw reset # cuidado - desativa todas as regras
+sudo ufw enable
+sudo ufw allow 22  # ssh
+sudo ufw allow http 
+sudo ufw allow https
+sudo ufw status numbered</code></pre>
+
+  <hr>
+  <h1>Apache</h1>
+  <p class="text-muted">Instala e configura o servidor web Apache com SSL.</p>
+  <div class="alert alert-success">
+    <strong>Servidor Web:</strong> Apache serve páginas web e aplicações. 
+    Com SSL habilitado, oferece HTTPS para conexões seguras.
+  </div>
+  <p><em>Esta configuração instala Apache e habilita módulos essenciais para SSL e headers de segurança.</em></p>
+  <div class="alert alert-info">
+    <strong>Módulos habilitados:</strong>
+    <ul>
+      <li><strong>ssl:</strong> Suporte a HTTPS</li>
+      <li><strong>headers:</strong> Controle de headers HTTP para segurança</li>
+      <li><strong>default-ssl:</strong> Configuração SSL padrão</li>
+    </ul>
+  </div>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo apt install apache2 -y
+sudo a2enmod ssl
+systemctl start apache2
+systemctl enable apache2
+systemctl status apache2
+curl http://127.0.0.1
+sudo a2enmod ssl
+sudo a2enmod headers
+sudo a2ensite default-ssl
+sudo apache2ctl configtest
+sudo systemctl restart apache2
+sudo ufw enable
+sudo ufw app list 
+sudo ufw app info "Apache Full"
+sudo ufw allow in "Apache Full"</code></pre>
+
+  <hr>
+  <div class="alert alert-success">
+    <h4>✅ Configuração Concluída!</h4>
+    <p>Seu servidor Ubuntu agora tem:</p>
+    <ul>
+      <li>✅ Rede configurada com duas interfaces</li>
+      <li>✅ Servidor DHCP para distribuição automática de IPs</li>
+      <li>✅ Servidor DNS para resolução de nomes</li>
+      <li>✅ Firewall UFW configurado</li>
+      <li>✅ Servidor web Apache com SSL</li>
+    </ul>
+  </div>
+
+  <h2>Próximos Passos</h2>
+  <ul>
+    <li><strong>Teste os serviços:</strong> Acesse http://192.168.5.1 para ver a página padrão do Apache</li>
+    <li><strong>Configure um cliente:</strong> Conecte um dispositivo à rede interna e verifique se recebe IP via DHCP</li>
+    <li><strong>Teste DNS:</strong> Use <code>dig ubuntu-server.lablinux.pt</code> para verificar resolução</li>
+    <li><strong>Personalize:</strong> Adicione seu próprio conteúdo web em <code>/var/www/html/</code></li>
+  </ul>
+
+  <h2>Solução de Problemas</h2>
+  <div class="alert alert-info">
+    <strong>Comandos úteis para diagnóstico:</strong>
+  </div>
+  <ul>
+    <li><code>systemctl status isc-dhcp-server</code> - Verifica status do DHCP</li>
+    <li><code>systemctl status bind9</code> - Verifica status do DNS</li>
+    <li><code>systemctl status apache2</code> - Verifica status do Apache</li>
+    <li><code>ufw status</code> - Mostra regras do firewall</li>
+    <li><code>ip a</code> - Verifica interfaces de rede</li>
+    <li><code>ip route</code> - Verifica tabelas de roteamento</li>
+  </ul>
+
+  <div class="alert alert-warning">
+    <strong>Dicas finais:</strong>
+    <ul>
+      <li>Mantenha o sistema atualizado: <code>sudo apt update && sudo apt upgrade</code></li>
+      <li>Configure backups regulares dos arquivos de configuração</li>
+      <li>Monitore os logs em <code>/var/log/</code> para detectar problemas</li>
+      <li>Documente qualquer alteração que fizer na configuração</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Adicionar botão de cópia a todos os elementos <pre>
+    const preElements = document.querySelectorAll('pre');
+    
+    preElements.forEach((pre, index) => {
+        // Criar container relativo para posicionamento
+        const container = document.createElement('div');
+        container.className = 'pre-container';
+        pre.parentNode.insertBefore(container, pre);
+        container.appendChild(pre);
+        
+        // Criar botão de cópia
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.innerHTML = '<i class="bi bi-clipboard"></i>';
+        copyBtn.title = 'Copiar para área de transferência';
+        copyBtn.setAttribute('data-index', index);
+        
+        container.appendChild(copyBtn);
+        
+        // Adicionar evento de clique
+        copyBtn.addEventListener('click', function() {
+            const codeElement = this.parentNode.querySelector('code');
+            if (codeElement) {
+                const textToCopy = codeElement.textContent || codeElement.innerText;
+                
+                // Usar Clipboard API se disponível
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        showCopiedFeedback(this);
+                    }).catch(err => {
+                        console.error('Erro ao copiar:', err);
+                        fallbackCopyTextToClipboard(textToCopy, this);
+                    });
+                } else {
+                    // Fallback para navegadores mais antigos
+                    fallbackCopyTextToClipboard(textToCopy, this);
+                }
+            }
+        });
+    });
+    
+    function showCopiedFeedback(button) {
+        const originalIcon = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check"></i>';
+        button.classList.add('copied');
+        
+        setTimeout(() => {
+            button.innerHTML = originalIcon;
+            button.classList.remove('copied');
+        }, 2000);
+    }
+    
+    function fallbackCopyTextToClipboard(text, button) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showCopiedFeedback(button);
+            }
+        } catch (err) {
+            console.error('Erro no fallback de cópia:', err);
+        }
+        
+        document.body.removeChild(textArea);
+    }
+});
+</script>
+</body>
+</html>

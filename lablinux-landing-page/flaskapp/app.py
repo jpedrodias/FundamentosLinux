@@ -65,6 +65,11 @@ def index():
 
 index = limiter.limit("60 per minute")(index)
 
+
+@app.route('/configs.html')
+def configs():
+    return render_template('configs.html')
+
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'], host='0.0.0.0', port=5000)
     

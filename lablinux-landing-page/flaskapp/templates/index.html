@@ -19,6 +19,9 @@
                 <div id="output_div" class="alert alert-info mt-4" style="display: none;">
                     O seu IP é: <strong>{{ user_ip }}</strong><br>
                     Número de visitas: <strong>{{ visit_count }}</strong>
+
+                    <a href="configs.html" class="btn btn-primary btn-lg">Abrir configurações</a>
+                    
                 </div>
 
                 <img src="{{ url_for('static', filename='random_imgs/' + picture) }}" alt="Random Image" class="img-fluid mt-4">
