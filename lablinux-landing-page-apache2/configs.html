@@ -1,78 +1,258 @@
 <!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<title>Configurações de Rede e Serviços Ubuntu</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<!-- ⚠️ Este ficheiro está em construção. -->
+<!-- Guia completo para configuração de rede, DHCP, DNS, Firewall e Apache em Ubuntu Server -->
+<div class="container my-4">
+  <h1 class="mb-3">Configurar a Interface</h1>
+  <p class="text-muted">Esta seção guia a configuração inicial das interfaces de rede no servidor Ubuntu.</p>
 
+  <h2>Consulta inicial</h2>
+  <p><!-- Verifica as interfaces de rede atuais para entender o estado inicial --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>ip a</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>2: enp0s3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:44:09:51 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.2.126/24 metric 100 brd 192.168.2.255 scope global dynamic enp0s3
+       valid_lft 2607sec preferred_lft 2607sec
+    inet6 fe80::a00:27ff:fe44:951/64 scope link 
+       valid_lft forever preferred_lft forever
+3: enp0s8: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 08:00:27:2b:50:ab brd ff:ff:ff:ff:ff:ff</code></pre>
 
-<div class="row g-3 mt-1">
-<div class="col-md-6">
-<div class="card h-100">
-<div class="card-body">
-<h6>Rede</h6>
-<pre class="cmd"><code>ip a
+  <h2>Nova configuração</h2>
+  <p><!-- Edita o arquivo de configuração do Netplan para adicionar a segunda interface de rede --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>cd /etc/netplan
+ls
+sudo nano 50-cloud-init.yaml</code></pre>
+  <p>Adicione as seguintes instruções ao arquivo <code>50-cloud-init.yaml</code>:</p>
+  <pre class="bg-dark text-light p-3 rounded"><code>network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: true
+    enp0s8:
+      dhcp4: false
+      addresses: [192.168.5.1/24]
+      routes:
+        - to: default
+          via: 192.168.5.254
+      nameservers:
+        addresses: [192.168.5.1, 1.1.1.1, 8.8.8.8]</code></pre>
+
+  <h2>Aplicar novas configurações</h2>
+  <p><!-- Aplica as mudanças na configuração de rede --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo netplan apply</code></pre>
+
+  <h2>Consultar resultado</h2>
+  <p><!-- Verifica se a configuração foi aplicada corretamente --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>ip a</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>3: enp0s8: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:2b:50:ab brd ff:ff:ff:ff:ff:ff
+    inet 192.168.5.1/24 brd 192.168.5.255 scope global enp0s8
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe2b:50ab/64 scope link 
+       valid_lft forever preferred_lft forever</code></pre>
+
+  <hr>
+  <h1>Adicionar um servidor de DHCP</h1>
+  <p class="text-muted">Configura um servidor DHCP para atribuir IPs automaticamente na rede interna.</p>
+
+  <h2>Instalação</h2>
+  <p><!-- Reinicia a interface e instala o pacote do servidor DHCP --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo ip link enp0s8 down
+sudo ip link enp0s8 up
+sudo apt install isc-dhcp-server</code></pre>
+
+  <h2>Configuração</h2>
+  <p><!-- Edita os arquivos de configuração do DHCP para definir a interface e o range de IPs --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/default/isc-dhcp-server</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>INTERFACESv4="enp0s8"
+INTERFACESv6=""</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/dhcp/dhcpd.conf</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>subnet 192.168.5.0 netmask 255.255.255.0 {
+  range 192.168.5.100 192.168.5.199;
+  option domain-name-servers ubuntu-server.lablinux.pt;
+  option domain-name "lablinux.pt";
+  option subnet-mask 255.255.255.0;
+  option routers 192.168.5.254;
+  option broadcast-address 192.168.5.255;
+  default-lease-time 600;
+  max-lease-time 7200;
+}</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo systemctl restart isc-dhcp-server
+sudo systemctl status isc-dhcp-server</code></pre>
+
+  <h2>Outros comandos</h2>
+  <p><!-- Verifica leases atribuídos e testa conectividade --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>cat /var/lib/dhcp/dhcpd.leases</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>ip route
+resolvectl status
+dig A example.com</code></pre>
+
+  <hr>
+  <h1>Serviço DNS</h1>
+  <p class="text-muted">Instala e configura o BIND9 para resolução de nomes de domínio.</p>
+
+  <h2>Instalação</h2>
+  <p><!-- Instala os pacotes necessários para o BIND9 --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo apt install bind9 bind9utils bind9-doc</code></pre>
+
+  <h2>Configuração de zona direta</h2>
+  <p><!-- Cria e edita o arquivo de zona direta para o domínio lablinux.pt --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo cp /etc/bind/db.empty /etc/bind/forward.lablinux.pt
+sudo nano /etc/bind/forward.lablinux.pt</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>; BIND reverse data file for lablinux rfc1918 zone
+;
+$TTL    86400
+@       IN      SOA     ubuntu-server.lablinux.pt. admin.lablinux.pt. (
+                     2025082001         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                          86400 )       ; Negative Cache TTL
+;
+@       IN      NS      ubuntu-server.lablinux.pt.
+@       IN      A       192.168.5.1
+ubuntu-server IN A      192.168.5.1
+www     IN       A      192.168.5.1</code></pre>
+
+  <h2>Configuração de zona reversa</h2>
+  <p><!-- Cria e edita o arquivo de zona reversa --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo cp /etc/bind/db.empty /etc/bind/reverse.lablinux.pt
+sudo nano /etc/bind/reverse.lablinux.pt</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>; BIND reverse data file for lablinux rfc1918 zone
+;
+$TTL    86400
+@       IN      SOA     ubuntu-server.lablinux.pt. admin.lablinux.pt. (
+                     2025082001         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                          86400 )       ; Negative Cache TTL
+;
+@       IN      NS      ubuntu-server.lablinux.pt.
+1       IN      PTR     ubuntu-server.lablinux.pt.</code></pre>
+
+  <h2>Configuração do named.conf.local</h2>
+  <p><!-- Adiciona as zonas ao arquivo de configuração local --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/bind/named.conf.local</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>zone "lablinux.pt" IN { 
+    type master;
+    file "/etc/bind/forward.lablinux.pt";
+};
+
+zone "5.168.192.in-addr.arpa" IN {
+  type master;
+  file "/etc/bind/reverse.lablinux.pt";
+};</code></pre>
+
+  <h2>Iniciar e testar o serviço</h2>
+  <p><!-- Reinicia o BIND9 e testa a resolução --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo systemctl restart bind9
+journalctl -xeu named.service</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>dig -x 127.0.0.1
+dig google.pt</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo named-checkzone lablinux.pt /etc/bind/forward.lablinux.pt
+sudo named-checkzone 5.168.192.in-addr.arpa /etc/bind/reverse.lablinux.pt</code></pre>
+
+  <h2>Configuração adicional DHCP</h2>
+  <p><!-- Atualiza a configuração DHCP para incluir o servidor DNS --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/dhcp/dhcpd.conf</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>subnet 192.168.5.0 netmask 255.255.255.0 {
+  range 192.168.5.100 192.168.5.199;
+  option domain-name-servers ubuntu-server.lablinux.pt;
+  #option domain-name-servers 192.168.5.1;
+  option domain-name "lablinux.pt";
+  option subnet-mask 255.255.255.0;
+  option routers 192.168.5.254;
+  option broadcast-address 192.168.5.255;
+  default-lease-time 600;
+  max-lease-time 7200;
+}</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo systemctl restart isc-dhcp-server
+sudo systemctl status isc-dhcp-server</code></pre>
+
+  <h2>Configuração dos encaminhadores DNS</h2>
+  <p><!-- Configura os encaminhadores para consultas externas --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/bind/named.conf.options</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>options {
+    listen-on { 127.0.0.1; 192.168.5.1; }; 
+    //Permissões de consulta 
+    allow-query { localhost; 192.168.5.0/24; }; 
+    //Configurações de DNS recursivo 
+    recursion yes; 
+    forwarders { 
+      8.8.8.8; 
+      8.8.4.4; 
+    }; 
+    listen-on-v6 { none; }; 
+};</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo named-checkconf</code></pre>
+
+  <h2>Verificar DNS configurado</h2>
+  <p><!-- Instala o NetworkManager e verifica o DNS --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo apt install network-manager
+nmcli dev show | grep DNS</code></pre>
+
+  <h2>Desligar interfaces de rede</h2>
+  <p><!-- Desliga interfaces para testes ou reconfiguração --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo ip link set enp0s3 down
+sudo ip link set enpps3 down</code></pre>
+
+  <h2>Trocar a route default</h2>
+  <p><!-- Altera a rota padrão para diferentes interfaces --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>resolvectl status
+sudo ip route del default
+sudo ip route add default via 192.168.2.1 dev enp0s3
 ip route show
-resolvectl status
-nmcli dev show | grep -i dns</code></pre>
+sudo ip route del default
+sudo ip route add default via 192.168.5.254 dev enp0s8
+ip route show</code></pre>
+
+  <h2>No cliente</h2>
+  <p><!-- Verifica a configuração de DNS no cliente --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>cat /etc/resolv.conf</code></pre>
+
+  <hr>
+  <h1>Instalação do Firewall</h1>
+  <p class="text-muted">Opções para firewalls externos e configuração do UFW no Ubuntu.</p>
+  <ul>
+    <li><a href="https://www.pfsense.org/download/" target="_blank">pfSense</a></li>
+    <li><a href="https://opnsense.org/download/" target="_blank">OpenSense</a></li>
+  </ul>
+  <p><!-- Altere a opção da LAN para os IPs conforme necessário --></p>
+
+  <h2>Firewall Ubuntu</h2>
+  <p><!-- Configura o UFW para permitir portas essenciais --></p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo ufw reset # cuidado - desativa todas as regras
+sudo ufw enable
+sudo ufw allow 22  # ssh
+sudo ufw allow http 
+sudo ufw allow https
+sudo ufw status numbered</code></pre>
+
+  <hr>
+  <h1>Apache</h1>
+  <p class="text-muted">Instala e configura o servidor web Apache com SSL.</p>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo apt install apache2 -y
+sudo a2enmod ssl
+systemctl start apache2
+systemctl enable apache2
+systemctl status apache2
+curl http://127.0.0.1
+sudo a2enmod ssl
+sudo a2enmod headers
+sudo a2ensite default-ssl
+sudo apache2ctl configtest
+sudo systemctl restart apache2
+sudo ufw enable
+sudo ufw app list 
+sudo ufw app info "Apache Full"
 </div>
-</div>
-</div>
-<div class="col-md-6">
-<div class="card h-100">
-<div class="card-body">
-<h6>Cliente (na LAN)</h6>
-<pre class="cmd"><code>ip a
-ip route
-cat /etc/resolv.conf
-ping 192.168.5.1
-ping ubuntu-server.lablinux.pt
-curl -I http://ubuntu-server.lablinux.pt</code></pre>
-</div>
-</div>
-</div>
-</div>
-
-
-<div class="callout p-3 rounded mt-3">
-<strong>Rollback rápido:</strong> se perder conectividade, ligue um ecrã/console local e remova alterações recentes de <span class="mono">/etc/netplan/50-cloud-init.yaml</span>; depois execute <span class="mono">sudo netplan apply</span>.
-</div>
-</section>
-
-
-<section id="appendix" class="mb-5">
-<h2 class="h4">Apêndice: Comandos úteis</h2>
-<pre class="cmd"><code># Serviços
-systemctl status bind9 isc-dhcp-server apache2 --no-pager
-
-
-# Monitorizar logs (noutra shell)
-sudo journalctl -f -u bind9 -u isc-dhcp-server -u apache2
-
-
-# Ferramentas DNS
-resolvectl status
-nslookup ubuntu-server.lablinux.pt 192.168.5.1
-
-
-# Rede
-ip -c a
-ip -c route
-
-
-# UFW
-sudo ufw status verbose
-
-
-# Correções comuns
-sudo ip link set enp0s3 up
-sudo ip link set enp0s8 up</code></pre>
-</section>
-
-
-<footer class="text-muted small border-top pt-3">
-Última atualização: 27‑08‑2025 • Elaborado em PT‑PT • Substitua valores pelo seu contexto.
-</footer>
-</main>
-</div>
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
