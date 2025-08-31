@@ -2,7 +2,7 @@
 services:
   flaskapp:
     container_name: ${FLASKAPP_NAME}
-    command: gunicorn -w 4 -b :5000 app:app
+    command: gunicorn -w 2 -b :5000 app:app
     #command: ./run.sh ${FLASKAPP_FILE}
     #command: python ./${FLASKAPP_FILE}
     restart: unless-stopped
