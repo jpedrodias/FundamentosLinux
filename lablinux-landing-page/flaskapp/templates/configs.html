@@ -188,8 +188,9 @@ sudo nano 50-cloud-init.yaml</code></pre>
   <p><!-- Reinicia a interface e instala o pacote do servidor DHCP --></p>
   <p><em>Antes de instalar, garantimos que a interface está ativa.</em></p>
   <pre class="bg-dark text-light p-3 rounded"><code>sudo ip link enp0s8 down
-sudo ip link enp0s8 up
-sudo apt install isc-dhcp-server</code></pre>
+sudo ip route add default via 192.168.2.1 dev enp0s3
+sudo apt install isc-dhcp-server
+sudo ip link enp0s8 up</code></pre>
 
   <h2>Configuração</h2>
   <p><!-- Edita os arquivos de configuração do DHCP para definir a interface e o range de IPs --></p>
