@@ -369,6 +369,7 @@ sudo systemctl status isc-dhcp-server</code></pre>
       8.8.4.4; 
     }; 
     listen-on-v6 { none; }; 
+    dnssec-validation auto;
 };</code></pre>
   <pre class="bg-dark text-light p-3 rounded"><code>sudo named-checkconf</code></pre>
 
