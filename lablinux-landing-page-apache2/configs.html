@@ -187,9 +187,12 @@ sudo nano 50-cloud-init.yaml</code></pre>
   <h2>Instalação</h2>
   <p><!-- Reinicia a interface e instala o pacote do servidor DHCP --></p>
   <p><em>Antes de instalar, garantimos que a interface está ativa.</em></p>
-  <pre class="bg-dark text-light p-3 rounded"><code>sudo ip link enp0s8 down
-sudo ip link enp0s8 up
-sudo apt install isc-dhcp-server</code></pre>
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo ufw reset
+sudo ip link enp0s8 down
+sudo ip route del default
+sudo ip route add default via 192.168.2.1 dev enp0s3
+sudo apt install isc-dhcp-server
+sudo ip link enp0s8 up</code></pre>
 
   <h2>Configuração</h2>
   <p><!-- Edita os arquivos de configuração do DHCP para definir a interface e o range de IPs --></p>
@@ -201,7 +204,12 @@ INTERFACESv6=""</code></pre>
   <div class="alert alert-warning">
     <strong>Atenção:</strong> Ajuste o range de IPs conforme sua rede. O DNS deve apontar para este servidor (192.168.5.1).
   </div>
-  <pre class="bg-dark text-light p-3 rounded"><code>subnet 192.168.5.0 netmask 255.255.255.0 {
+
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/dhcp/dhcpd.conf</code></pre>
+  
+
+  <pre class="bg-dark text-light p-3 rounded"><code>
+subnet 192.168.5.0 netmask 255.255.255.0 {
   range 192.168.5.100 192.168.5.199;
   option domain-name-servers ubuntu-server.lablinux.pt;
   option domain-name "lablinux.pt";
@@ -213,6 +221,11 @@ INTERFACESv6=""</code></pre>
 }</code></pre>
   <pre class="bg-dark text-light p-3 rounded"><code>sudo systemctl restart isc-dhcp-server
 sudo systemctl status isc-dhcp-server</code></pre>
+
+PS: se for necessário alterar o hostname, fazer
+<pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/hostname</code></pre>
+
+
 
   <h2>Outros comandos</h2>
   <p><!-- Verifica leases atribuídos e testa conectividade --></p>
@@ -351,10 +364,12 @@ sudo systemctl status isc-dhcp-server</code></pre>
     //Configurações de DNS recursivo 
     recursion yes; 
     forwarders { 
+      1.1.1.1;
       8.8.8.8; 
       8.8.4.4; 
     }; 
     listen-on-v6 { none; }; 
+    dnssec-validation auto;
 };</code></pre>
   <pre class="bg-dark text-light p-3 rounded"><code>sudo named-checkconf</code></pre>
 
@@ -424,9 +439,22 @@ ip route show</code></pre>
   <pre class="bg-dark text-light p-3 rounded"><code>sudo ufw reset # cuidado - desativa todas as regras
 sudo ufw enable
 sudo ufw allow 22  # ssh
+sudo ufw allow 53
 sudo ufw allow http 
 sudo ufw allow https
 sudo ufw status numbered</code></pre>
+
+Extras:
+<pre class="bg-dark text-light p-3 rounded"><code>
+sudo ufw enable
+sudo ufw app list
+
+sudo ufw allow in "OpenSSH"
+sudo ufw allow in "Bind9"
+sudo ufw allow in "Apache Full"
+
+sudo ufw app info "Apache Full"
+</code></pre>
 
   <hr>
   <h1>Apache</h1>

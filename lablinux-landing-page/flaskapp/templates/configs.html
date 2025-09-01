@@ -439,9 +439,22 @@ ip route show</code></pre>
   <pre class="bg-dark text-light p-3 rounded"><code>sudo ufw reset # cuidado - desativa todas as regras
 sudo ufw enable
 sudo ufw allow 22  # ssh
+sudo ufw allow 53
 sudo ufw allow http 
 sudo ufw allow https
 sudo ufw status numbered</code></pre>
+
+Extras:
+<pre class="bg-dark text-light p-3 rounded"><code>
+sudo ufw enable
+sudo ufw app list
+
+sudo ufw allow in "OpenSSH"
+sudo ufw allow in "Bind9"
+sudo ufw allow in "Apache Full"
+
+sudo ufw app info "Apache Full"
+</code></pre>
 
   <hr>
   <h1>Apache</h1>
