@@ -204,6 +204,10 @@ INTERFACESv6=""</code></pre>
   <div class="alert alert-warning">
     <strong>Atenção:</strong> Ajuste o range de IPs conforme sua rede. O DNS deve apontar para este servidor (192.168.5.1).
   </div>
+
+  <pre class="bg-dark text-light p-3 rounded"><code>sudo nano /etc/dhcp/dhcpd.conf</code></pre>
+  
+
   <pre class="bg-dark text-light p-3 rounded"><code>subnet 192.168.5.0 netmask 255.255.255.0 {
   range 192.168.5.100 192.168.5.199;
   option domain-name-servers ubuntu-server.lablinux.pt;
