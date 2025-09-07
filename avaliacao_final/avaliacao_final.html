@@ -1,0 +1,882 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Fundamentos de Linux - Avaliação Final</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(174, 130, 0, 0.223); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 99, 174, 0.172); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="1dd473f0-be87-802e-b526-dc3c1d0d56b7" class="page sans"><header><h1 class="page-title">Fundamentos de Linux - Avaliação Final</h1><p class="page-description"></p></header><div class="page-body"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="25c473f0-be87-801e-986e-fb5b816a2678"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><p id="25b473f0-be87-8079-8586-c50bf4a31121" class="">Curso: UFCD 0836 - Linux - Instalação e configuração</p><p id="25c473f0-be87-80a3-a94e-f78729f44170" class="">Formando: Pedro Dias</p></div></figure><p id="25b473f0-be87-8059-9dca-f07b6d635939" class="">
+</p><hr id="25b473f0-be87-80bd-8e74-e4622793db72"/><h1 id="25b473f0-be87-8000-9619-c8d3d22bf16c" class="">Parte 1: </h1><blockquote id="25b473f0-be87-8075-9303-eca15b1f2500" class="">Submissão de Prints de Configuração (10 valores)</blockquote><p id="25b473f0-be87-8009-b730-c9bb992b3571" class="">
+</p><h2 id="25b473f0-be87-8013-b04d-f7d734c6a5b8" class="">1. a)</h2><blockquote id="25b473f0-be87-8099-a729-ceb4a976f851" class="">Coloque um print da configuração de IP fixo no servidor Ubuntu no ficheiro <code>/etc/netplan/*.yaml</code>.</blockquote><p id="25b473f0-be87-8043-aee7-f23b62a3940b" class="">
+</p><p id="25b473f0-be87-8013-9bf1-e933a2594646" class="">Etapas:</p><p id="25b473f0-be87-8007-a7ee-c37a2c4a8647" class="">Primeiro, listar a pasta /etc/netplan e depois fazer cat ao(s) ficheiro(s) encontrado(s).</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-803b-bdd8-e5b3492ead1f" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">ls -l /etc/netplan
+cat /etc/netplan/50-cloud-init.yaml
+sudo cat /etc/netplan/50-cloud-init.yaml</code></pre><figure id="25c473f0-be87-800a-8ae1-e9683167eaf9" class="image"><a href="image00.png"><img style="width:1474.96875px" src="image00.png"/></a></figure><h2 id="25b473f0-be87-80bf-9362-fa7501d4fb4c" class="">1. b)</h2><blockquote id="25b473f0-be87-80fc-9e30-e75ee781720d" class="">Envie uma captura de ecrã do ficheiro <code>/etc/bind/named.conf.local</code>, mostrando a configuração de uma zona DNS.</blockquote><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-802d-8b3c-defd7a777285" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">ls -l /etc/bind/named.conf.options
+cat /etc/bind/named.conf.options</code></pre><figure id="25b473f0-be87-803a-b412-df3e2ea5cdd4" class="image"><a href="image01.png"><img style="width:1090.7874755859375px" src="image01.png"/></a></figure><p id="25b473f0-be87-800d-974e-c64e8b1b2f8d" class="">
+</p><h2 id="25b473f0-be87-8075-bc3e-eb54c98ba289" class="">1.c)</h2><blockquote id="25b473f0-be87-80cb-aeba-f52fff27dec9" class="">Apresente um print do resultado do comando dig &lt;nome do domínio&gt; realizado no servidor Ubuntu, comprovando a resolução de nomes.</blockquote><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-8069-8a08-d506bff214b5" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">dig ubuntu-server ubuntu-server.lablinux.pt</code></pre><figure id="25b473f0-be87-800e-b054-d01e095d57e9" class="image"><a href="image02.png"><img style="width:1090.7874755859375px" src="image02.png"/></a></figure><h2 id="25b473f0-be87-8025-a733-ca82c5c8aafb" class="">1.d)</h2><blockquote id="25b473f0-be87-801a-aa3c-edc3d4aecf8c" class="">Submeta uma captura de ecrã do ficheiro de configuração do serviço DHCP no Ubuntu Server, mostrando a configuração no ficheiro <code>/etc/dhcp/dhcpd.conf</code>.</blockquote><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-80cd-b917-ebcee09b6c87" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">ls -l /etc/dhcp/dhcpd.conf
+cat /etc/dhcp/dhcpd.conf</code></pre><figure id="25b473f0-be87-809c-9792-e5a5196ca5a4" class="image"><a href="image03.png"><img style="width:1090.800048828125px" src="image03.png"/></a></figure><h2 id="25b473f0-be87-809f-81f4-e34ba1c1152d" class="">1.e)</h2><blockquote id="25b473f0-be87-80d8-8248-e198e1861a47" class="">Mostre a configuração da firewall UFW, incluindo um print dos comandos utilizados para permitir conexões específicas.</blockquote><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-80a5-bf51-f9d84fba9fbd" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo ufw reset
+sudo ufw enable
+sudo ufw allow 22
+sudo ufw allow 53
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw status numbered</code></pre><figure id="25c473f0-be87-803b-9b10-d343c711022e" class="image"><a href="image04.png"><img style="width:1474.96875px" src="image04.png"/></a></figure><p id="25b473f0-be87-80b6-a4c1-d8924474017f" class="">
+</p><p id="25b473f0-be87-8000-a319-cb658a487d4a" class="">A ponderar se é importante registar as atividades da firewall com </p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-8049-bac0-dab96f72b345" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">ufw logging on
+tail -f /var/log/ufw.log</code></pre><p id="25b473f0-be87-80f7-ae58-e71ecdb1499f" class="">E nesta caso, pensar em limitar o tamanho do log em <code>/etc/logrotate.d/ufw</code></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-80af-bded-c5195d491e60" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">/var/log/ufw.log {
+    daily
+    missingok
+    rotate 7
+    compress
+    delaycompress
+    notifempty
+}</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-80ed-97d2-c7ba3385505b" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo logrotate -f /etc/logrotate.d/ufw</code></pre><p id="25b473f0-be87-80e9-b877-c31f7b26b8f0" class="">
+</p><h2 id="25b473f0-be87-803c-8ee4-fd0ff4eb677b" class="">1.f)</h2><blockquote id="25b473f0-be87-8044-8244-e6dd4ff7571b" class="">Submeta uma captura de ecrã do ficheiro de configuração do Apache, mostrando a configuração do ficheiro <code>/etc/apache2/sites-available/000-default.conf</code></blockquote><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-8042-8e24-cecfc0ef134e" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">ls -l /etc/apache2/sites-available/</code></pre><figure id="25b473f0-be87-8077-abac-d14759fc8ddd" class="image"><a href="image05.png"><img style="width:1090.7874755859375px" src="image05.png"/></a></figure><p id="25b473f0-be87-800c-a65d-c5df7160aec9" class="">
+</p><h2 id="25b473f0-be87-8064-a297-c477f357c393" class="">1.g)</h2><blockquote id="25b473f0-be87-8049-bd09-dd4ebcaebeda" class="">Explique como configurar uma interface de rede no Ubuntu Server usando o arquivo de configuração <code>/etc/netplan/*.yaml</code>. <br/>Mostre o arquivo de configuração de IP fixo e os comandos necessários para aplicar a configuração de rede.<br/>Apresente um print do comando <code>ip a</code> para verificar a interface configurada.</blockquote><p id="25b473f0-be87-80d2-a3b2-dae8f2252824" class="">
+</p><p id="25b473f0-be87-8062-8d2c-e45b3cdfa434" class="">No Ubuntu Server, a configuração de rede é feita no ficheiro YAML do Netplan. Para definir um IP fixo, edita-se o ficheiro <code>/etc/netplan/50-cloud-init.yaml</code> e depois aplica-se a configuração com o comando <code>netplan</code>.</p><p id="25b473f0-be87-8053-a30a-cf3872f1b956" class="">
+</p><p id="25b473f0-be87-80a6-94af-c5fd8bd832a9" class="">Estes são os passos:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-80ec-932d-e13224a31d01" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">cd /etc/netplan
+ls 
+sudo nano 50-cloud-init.yaml</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-80ec-8c67-f89758afca1e" class="code code-wrap"><code class="language-YAML" style="white-space:pre-wrap;word-break:break-all">network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: true
+    enp0s8:
+      dhcp4: false
+      addresses: [192.168.5.1/24]
+      routes:
+        - to: default
+          via: 192.168.5.254
+      nameservers:
+        addresses: [192.168.5.1, 1.1.1.1, 8.8.8.8]</code></pre><p id="25b473f0-be87-8052-a113-cece94659d5e" class="">E para aplicar estas alterações:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-80ba-82b2-e5265aea2069" class="code code-wrap"><code class="language-YAML" style="white-space:pre-wrap;word-break:break-all">sudo netplan apply</code></pre><p id="25b473f0-be87-8036-a017-ef52fbe22d1a" class="">E para consultar as alterações na interface, será:</p><figure id="25b473f0-be87-809c-8883-ec19e7e64f09" class="image"><a href="image06.png"><img style="width:1090.7874755859375px" src="image06.png"/></a></figure><h2 id="25b473f0-be87-8051-99b5-ebcae6ad10cf" class="">1.h)</h2><blockquote id="25b473f0-be87-80e5-8235-c2a38931e37f" class="">Submeta uma captura de ecrã do ficheiro <code>/etc/bind/named.conf.options</code>, destacando a configuração do reencaminhamento DNS para os servidores externos.</blockquote><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-80f9-9feb-f80211d8023d" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">ls -l /etc/bind/named.conf.options
+cat /etc/bind/named.conf.options</code></pre><figure id="25b473f0-be87-80d1-a650-f77927ed2839" class="image"><a href="image07.png"><img style="width:1090.800048828125px" src="image07.png"/></a></figure><h2 id="25b473f0-be87-8025-a733-ca82c5c8aafb" class="">1.i)</h2><blockquote id="25b473f0-be87-80c0-b9b9-fff7ffcd57f4" class="">Submeta um print da criação de um novo utilizador no servidor Ubuntu com o comando <code>useradd</code>. Inclua também o comando utilizado para atribuir uma senha ao utilizador e verifique a criação no ficheiro <code>/etc/passwd</code>.</blockquote><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-80fc-a819-dc637956ce0a" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo useradd -m -s /bin/bash joao
+sudo passwd joao
+grep joao /etc/passwd
+ls -l /home</code></pre><p id="25b473f0-be87-802d-b8a2-f7baedbdb33b" class="">
+</p><figure id="25b473f0-be87-80e6-9663-fcdada634935" class="image"><a href="image08.png"><img style="width:1090.7625732421875px" src="image08.png"/></a></figure><h2 id="25b473f0-be87-808c-a971-d2efbbcbab4d" class="">1.j)</h2><blockquote id="25b473f0-be87-8051-b9c6-c9404787e99a" class="">Apresente um print da criação de um novo grupo no servidor Ubuntu com o comando <code>groupadd</code>.<br/>Em seguida, mostre como adicionar um utilizador ao grupo criado utilizando o comando <code>usermod</code>.<br/>Inclua também a verificação da mudança no ficheiro <code>/etc/group</code>.</blockquote><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-8002-9d80-c208b364f002" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo groupadd projeto
+sudo usermod -aG projeto joao
+grep projeto /etc/group</code></pre><figure id="25b473f0-be87-80d2-b90b-ccda6fe49bfe" class="image"><a href="image09.png"><img style="width:1090.675048828125px" src="image09.png"/></a></figure><hr id="25b473f0-be87-80b1-b39c-fb09ff36af97"/><hr id="25b473f0-be87-8005-aa35-cafd8714603e"/><p id="25b473f0-be87-807f-a1cf-fc0eadadd93a" class="">
+</p><h1 id="25b473f0-be87-808a-8d99-d9268eb15235" class="">Parte 2</h1><blockquote id="25b473f0-be87-80c0-8e6b-cb4a559dd91d" class=""> Texto Corrido com Evidências (6 valores)</blockquote><p id="25b473f0-be87-809f-a87f-f6e1f0fedb24" class="">
+</p><h2 id="25b473f0-be87-806b-ba66-fe44a2269637" class="">2.a) </h2><blockquote id="25b473f0-be87-8060-a000-d87b3950bf84" class="">Explique o que são permissões no Linux (rwx) e como estas podem ser ajustadas com o comando <code>chmod</code>. Inclua exemplos práticos.</blockquote><p id="25b473f0-be87-80c7-a548-c27dcb2805aa" class="">
+</p><p id="25b473f0-be87-80d3-90d9-cfa8e98c470c" class="">No Linux, cada ficheiro ou diretório tem associadas permissões de acesso que determinam quem pode ler, escrever ou executar esse recurso. </p><p id="25c473f0-be87-809b-a24d-f9c184605e49" class="">Estas permissões são representadas pelas letras r (read), w (write) e x (execute).</p><p id="25b473f0-be87-8002-aede-dbf93a831f1f" class="">
+</p><p id="25b473f0-be87-8027-80cc-d17794d979fe" class="">As permissões aplicam-se a três níveis:</p><ol type="1" id="25b473f0-be87-8049-8b76-e80b194e0d9b" class="numbered-list" start="1"><li><strong>Utilizador (u)</strong> – o dono do ficheiro.</li></ol><ol type="1" id="25b473f0-be87-80be-aa8f-d43a27066f84" class="numbered-list" start="2"><li><strong>Grupo (g)</strong> – o grupo a que pertence o ficheiro.</li></ol><ol type="1" id="25b473f0-be87-809b-b0ed-e4c4470b06c2" class="numbered-list" start="3"><li><strong>Outros (o)</strong> – todos os restantes utilizadores.</li></ol><p id="25b473f0-be87-8057-97c0-e53be28e8e9a" class="">
+</p><p id="25b473f0-be87-8089-8735-fbdc9b5fa7e6" class="">Cada nível corresponde a <strong>3 bits</strong> (um para cada permissão r, w, x):</p><ul id="25b473f0-be87-80fc-823a-dbcbd00b03cf" class="bulleted-list"><li style="list-style-type:disc">Bit = <strong>0</strong> → permissão desativada (<em>off</em>).</li></ul><ul id="25b473f0-be87-801d-bdf9-e4bfca05bdb4" class="bulleted-list"><li style="list-style-type:disc">Bit = <strong>1</strong> → permissão ativa (<em>on</em>).</li></ul><p id="25b473f0-be87-808a-8561-e587485fe3c3" class="">
+</p><p id="25b473f0-be87-8051-8be6-cc8c6e3db2f0" class="">Assim, rwx = 111, rw- = 110, r-- = **100.<br/>Juntando os 3 níveis (u, g, o), obtemos 9 bits no total.</p><p id="25b473f0-be87-808c-8a6f-da10f5d33c99" class="">
+</p><p id="25b473f0-be87-8010-9550-c3c7ef715f11" class="">Esses bits podem ser representados de duas formas:</p><ul id="25b473f0-be87-805d-9a05-f649583c98f1" class="bulleted-list"><li style="list-style-type:disc"><strong>Notação simbólica (letras)</strong>, indicando explicitamente o que queremos alterar.</li></ul><ul id="25b473f0-be87-8070-a4f4-ee8a4d62508e" class="bulleted-list"><li style="list-style-type:disc"><strong>Notação numérica (decimal)</strong>, em que cada conjunto de 3 bits é convertido num número (0–7).</li></ul><p id="25b473f0-be87-80e4-9c3e-e9b7b8883600" class="">
+</p><p id="25b473f0-be87-8011-a465-c010e49bd44b" class="">Exemplo com letras (simbólico)</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-80af-a5f0-f99b68eb9f8d" class="code code-wrap"><code class="language-YAML" style="white-space:pre-wrap;word-break:break-all"># Dar execução ao dono
+chmod u+x programa.sh
+
+# Remover escrita ao grupo
+chmod g-w ficheiro.txt
+
+# Dar leitura a todos
+chmod a+r documento.txt</code></pre><p id="25b473f0-be87-80ea-a961-da881431f797" class="">
+</p><p id="25b473f0-be87-8086-88a4-d8a65c942c34" class="">Exemplo com valores numéricos</p><p id="25b473f0-be87-8064-bcab-ccf7aee291b8" class="">Cada permissão tem um valor:</p><ul id="25b473f0-be87-80c1-876f-fe5e5abf2b33" class="bulleted-list"><li style="list-style-type:disc">r = 4, w = 2, x = 1</li></ul><p id="25b473f0-be87-80f2-a46a-f8f43ad3df09" class="">A soma dos valores dá o equivalente decimal:</p><ul id="25b473f0-be87-8003-b45a-de4dd29be6c8" class="bulleted-list"><li style="list-style-type:disc">7 = rwx (111)</li></ul><ul id="25b473f0-be87-80c9-a7a9-cc85af0efc56" class="bulleted-list"><li style="list-style-type:disc">6 = rw- (110)</li></ul><ul id="25b473f0-be87-8087-9b68-ed2bcd42f8d6" class="bulleted-list"><li style="list-style-type:disc">5 = r-x (101)</li></ul><ul id="25b473f0-be87-80da-96cb-fddfc0c3e7f4" class="bulleted-list"><li style="list-style-type:disc">4 = r-- (100)</li></ul><p id="25b473f0-be87-80e6-86e6-fc750822d67b" class="">
+</p><p id="25b473f0-be87-80a4-a3c3-d810c5b01d4a" class="">Exemplo:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-80f2-8cbd-fa4c2a0fa397" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">touch ficheiro.txt
+ls -l ficheiro.txt
+chmod 644 ficheiro.txt
+ls -l ficheiro.txt
+
+touch programa.sh
+ls -l programa.sh
+chmod 755 programa.sh
+ls -l programa.sh
+
+touch segredo.txt
+ls -l segredo.txt
+chmod 600 segredo.txt
+ls -l segredo.txt</code></pre><figure id="25b473f0-be87-8047-b02c-f741c36a7dc4" class="image"><a href="image10.png"><img style="width:1090.7625732421875px" src="image10.png"/></a></figure><p id="25c473f0-be87-8082-88b9-c580f9f92c24" class="">
+</p><h2 id="25b473f0-be87-806a-8b03-f1ef7f85524d" class="">2.b)</h2><blockquote id="25b473f0-be87-8075-a5d6-e00882435613" class="">Descreva como configurar o servidor DNS no Ubuntu Server usando o BIND9. Mostre a configuração de uma zona de pesquisa direta no arquivo <code>/etc/bind/named.conf.local</code> e explique como criar uma zona reversa. Inclua exemplos de configurações de zonas e como testar a resolução<br/>de nomes.</blockquote><p id="25b473f0-be87-8075-ad61-d6892c30d138" class="">
+</p><p id="25b473f0-be87-80fc-8c9e-fd83e446cb4d" class="">Para configurar um servidor DNS no Ubuntu Server com o BIND9, é necessário instalar o serviço e editar os ficheiros de configuração das zonas.</p><p id="25b473f0-be87-804f-a50e-f77ff5db8c06" class="">
+</p><p id="25b473f0-be87-80b6-b6ea-cc945589cd0f" class="">Etapa 1 será a instalação do bind9</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-8089-b786-e9ca7134ed4d" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo apt update
+sudo apt install bind9 bind9utils bind9-doc -y</code></pre><p id="25b473f0-be87-805c-9566-ed26b41128ac" class="">
+</p><p id="25b473f0-be87-80e4-b585-d56e3ca85c78" class="">Etapa 2 é a configuração da zona <code>forward</code> e de <code>reverse</code> editando o respectovo ficheiro</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-8075-8b6d-e90572b39147" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo nano /etc/bind/named.conf.local</code></pre><p id="25b473f0-be87-80d3-bc88-ff6c98793977" class="">E colocar as seguintes instruções:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-809d-9c38-c6ec3e748123" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">zone &quot;lablinux.pt&quot; IN {
+    type master;
+    file &quot;/etc/bind/forward.lablinux.pt&quot;;
+};
+
+zone &quot;5.168.192.in-addr.arpa&quot; IN {
+  type master;
+  file &quot;/etc/bind/reverse.lablinux.pt&quot;;
+};</code></pre><p id="25b473f0-be87-80ae-87dc-f39dd5ce0212" class="">
+</p><p id="25b473f0-be87-8003-a738-de8f39858452" class="">Etapa 3 será criar os ficheiros de forward e reverse referido no ficheiro anterior (aproveitando o template já existente <code>db.empty</code>).</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-8053-baa6-c63c2d10937d" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo cp /etc/bind/db.empty /etc/bind/forward.lablinux.pt
+sudo nano /etc/bind/forward.lablinux.pt</code></pre><p id="25b473f0-be87-8069-8566-cdc5a6143b9a" class="">E alterar para:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-80ea-a7ba-e0c2634bd27b" class="code code-wrap"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">$TTL    86400
+@       IN      SOA     ubuntu-server.lablinux.pt. admin.lablinux.pt. (
+                        2025082001 ; Serial
+                        604800     ; Refresh
+                        86400      ; Retry
+                        2419200    ; Expire
+                        86400 )    ; Negative Cache TTL
+
+@       IN      NS      ubuntu-server.lablinux.pt.
+@       IN      A       192.168.5.1
+ubuntu-server IN A      192.168.5.1
+www     IN      A      192.168.5.1
+</code></pre><p id="25b473f0-be87-80c4-bbd9-e42ad770a429" class="">
+</p><p id="25b473f0-be87-80eb-a8e8-cbb4f414e419" class="">E repetir para o outro ficheiro (reverse) de forma semelhante:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-80fa-b8cf-cb2f8404df66" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo cp /etc/bind/db.empty /etc/bind/reverse.lablinux.pt
+sudo nano /etc/bind/reverse.lablinux.pt</code></pre><p id="25b473f0-be87-8046-9e4c-eb98a100e769" class="">e altera para</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-8042-b408-e6d1d9de928a" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">$TTL    86400
+@       IN      SOA     ubuntu-server.lablinux.pt. admin.lablinux.pt. (
+                        2025082001 ; Serial
+                        604800     ; Refresh
+                        86400      ; Retry
+                        2419200    ; Expire
+                        86400 )    ; Negative Cache TTL
+
+@       IN      NS      ubuntu-server.lablinux.pt.
+1       IN      PTR     ubuntu-server.lablinux.pt.
+</code></pre><p id="25b473f0-be87-80c8-993d-cb70d89903b3" class="">
+</p><p id="25b473f0-be87-8072-bcbc-e96c147d074e" class="">
+</p><p id="25b473f0-be87-80e6-aee7-cbaff76001da" class="">Etapa 4 será validar a configuração feita.</p><p id="25b473f0-be87-80b8-9bd0-c1f98d1bd935" class="">Ou seja, verificar se há erros antes mesmo de reiniciar o serviço:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-8023-9587-e36b9e7ba9ce" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo named-checkconf
+sudo named-checkzone lablinux.pt /etc/bind/forward.lablinux.pt
+sudo named-checkzone 5.168.192.in-addr.arpa /etc/bind/reverse.lablinux.pt</code></pre><figure id="25b473f0-be87-808d-8a7f-fb64061b6ed6" class="image"><a href="image11.png"><img style="width:1090.7249755859375px" src="image11.png"/></a></figure><p id="25b473f0-be87-8010-989c-c537e852d66a" class="">
+</p><p id="25b473f0-be87-803b-b7ef-c5ff872ec4d3" class="">Etapa 5 (se tudo estiver OK no passo anterior) será reiniciar o respectivo serviço</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-8046-9c5d-c51ea3f394d8" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo systemctl restart bind9
+sudo systemctl status bind9</code></pre><figure id="25b473f0-be87-80c1-8e88-e99c52c602d0" class="image"><a href="image12.png"><img style="width:1090.7874755859375px" src="image12.png"/></a></figure><p id="25b473f0-be87-8025-9d27-fa81b4128213" class="">
+</p><p id="25b473f0-be87-80b0-b6a5-fae6326000f3" class="">Etapa 6 é testar o acesso</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-8016-a1d9-de7fb2595ac0" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">dig lablinux.pt
+dig www.lablinux.pt
+dig -x 192.168.5.1</code></pre><p id="25c473f0-be87-80c9-b1e2-d64a062c8161" class="">
+</p><p id="25c473f0-be87-8097-9018-eb4c8e0b159c" class="">
+</p><h2 id="25b473f0-be87-8042-8a92-cb9724f1bd92" class="">2.c)</h2><blockquote id="25b473f0-be87-8087-8d3d-f5b178409341" class="">Descreva como validar que a firewall UFW está ativa e a bloquear conexões indesejadas no servidor Ubuntu. Inclua o comando utilizado e um print da validação.</blockquote><p id="25b473f0-be87-8085-8bfc-ea35b13a050b" class="">
+</p><p id="25b473f0-be87-8041-9afa-f8e55603fc01" class="">Para verificar o estado da firewall fazer:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-8016-92a0-fadd03b0a343" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo ufw status verbose</code></pre><figure id="25b473f0-be87-80bd-96d5-ccb2471c624e" class="image"><a href="image13.png"><img style="width:1090.800048828125px" src="image13.png"/></a></figure><p id="25b473f0-be87-80b8-b575-cdb0de4496ad" class="">
+</p><h2 id="25b473f0-be87-8074-80dd-dfa957099cb8" class="">2.d)</h2><blockquote id="25b473f0-be87-8055-af67-df4a535493e7" class="">Explique como criar utilizadores, grupos e dar permissões específicas a um diretório no servidor Ubuntu. <br/>Forneça prints do processo (comandos utilizados e estrutura de permissões).</blockquote><p id="25b473f0-be87-8073-a6e5-f0a8471c6f62" class="">
+</p><p id="25b473f0-be87-8020-a25a-cad4dcb060cc" class="">É possível criar utilizadores e grupos e atribuir permissões específicas a diretórios para controlar o acesso.</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-8064-8bf4-f7478969848c" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo groupadd projeto
+sudo useradd -m -s /bin/bash -g projeto joao
+sudo passwd joao
+sudo usermod -aG projeto pedrodias</code></pre><p id="25b473f0-be87-809b-bc0d-e04bcfd198fd" class="">
+</p><p id="25b473f0-be87-80fc-9f08-f08b4910d009" class="">De seguida, é possível criar a pasta e adicioar as permissões para que esse user possa </p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25b473f0-be87-803b-9da3-f32a1ca4d2eb" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo mkdir /dados
+sudo usermod -aG projeto joao
+sudo usermod -aG projeto pedrodias
+sudo chgrp projeto /dados
+sudo chmod 770 /dados
+ls -ld /dados
+cd /dados
+exit
+...
+cd /dados
+pwd
+thouch ficheiro.txt
+ls -l </code></pre><figure id="25b473f0-be87-80fb-8b7b-c342d1334945" class="image"><a href="image14.png"><img style="width:1090.7874755859375px" src="image14.png"/></a></figure><p id="25b473f0-be87-8066-96e5-c25dd8757f21" class="">… (e depois de novo login)</p><figure id="25b473f0-be87-8010-9710-d1ceeab61273" class="image"><a href="image15.png"><img style="width:1090.75px" src="image15.png"/></a></figure><p id="25b473f0-be87-80c7-b8cb-eeff3a420ecf" class="">
+</p><h2 id="25b473f0-be87-8020-b45d-ff4ca9147e8c" class="">2.e)</h2><blockquote id="25b473f0-be87-80bf-9c2b-ec21cac1b5e9" class="">Explique como configurar o serviço Apache no servidor Ubuntu para que ele inicie automaticamente após o arranque do sistema. Inclua prints do comando utilizado e do teste que verifica se o serviço está em execução após um reinício.</blockquote><p id="25c473f0-be87-80be-b737-e8a0b1832d21" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-80a0-b5eb-e24932190e4c" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo apt install apache2 -y &gt; /dev/null 2&gt;&amp;1 # para caber no mesmo print
+
+sudo a2enmod ssl
+sudo systemctl start apache2
+sudo systemctl enable apache2
+sudo systemctl status apache2
+
+curl http://127.0.0.1 -I</code></pre><figure id="261473f0-be87-808a-85c9-efbd608b8ba1" class="image"><a href="image16.png"><img style="width:1090.7874755859375px" src="image16.png"/></a></figure><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-807c-8b5c-d2c81c2550e9" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo a2enmod ssl
+sudo a2enmod headers
+sudo a2ensite default-ssl
+
+
+sudo apache2ctl configtest
+sudo systemctl restart apache2</code></pre><figure id="261473f0-be87-8093-abe7-d64ade5e9bc4" class="image"><a href="image17.png"><img style="width:1090.75px" src="image17.png"/></a></figure><p id="261473f0-be87-8090-82a2-f4e19f51004e" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="261473f0-be87-80b8-a226-f7dd99c60d28" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">sudo ufw enable
+sudo ufw app list
+
+sudo ufw allow in &quot;OpenSSH&quot;
+sudo ufw allow in &quot;Bind9&quot;
+sudo ufw allow in &quot;Apache Full&quot;
+...
+sudo ufw app info &quot;Apache Full&quot;</code></pre><figure id="261473f0-be87-80f9-bcd2-dc87b4a2c2be" class="image"><a href="image18.png"><img style="width:1090.7874755859375px" src="image18.png"/></a></figure><h2 id="25b473f0-be87-8006-ad62-f50e4b865f5f" class="">2.f)</h2><blockquote id="25b473f0-be87-80d4-9322-f13531f83f8f" class="">Descreva o processo para verificar o estado de um serviço no Ubuntu utilizando o comando systemctl status. Apresente um exemplo de como verificar o estado do serviço Apache e os resultados obtidos.</blockquote><p id="25c473f0-be87-807d-ad8d-e1edb332646b" class="">
+</p><p id="25c473f0-be87-806f-b0c1-f4922ee4edde" class="">No Ubuntu, os serviços são geridos pelo systemd através do comando <code>systemctl</code>. Para verificar o estado de um serviço em execução, utiliza-se:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-80aa-aac3-fd1d5b52ed04" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">systemctl status &lt;nome-do-serviço&gt;</code></pre><p id="25c473f0-be87-803e-b2e3-ecb07798ff96" class="">
+</p><p id="25c473f0-be87-80f6-a479-ca2ff622d794" class="">Para verificar o estado do Apache2</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="25c473f0-be87-807c-ada8-ddcbc27dd63f" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">systemctl status apache2</code></pre><figure id="25c473f0-be87-80ea-ad07-d1023bc57599" class="image"><a href="image19.png"><img style="width:1090.7874755859375px" src="image19.png"/></a></figure><p id="25c473f0-be87-801d-b4d7-df16867d9191" class="">
+</p><p id="25c473f0-be87-80a4-8937-f629c3efbdf7" class="">
+</p><hr id="25b473f0-be87-804f-8450-f955f55809dc"/><hr id="25c473f0-be87-8058-bded-dd67b4a99078"/><h1 id="25b473f0-be87-8053-8479-e25f7fbf4b2b" class="">Parte 3</h1><blockquote id="25b473f0-be87-806c-8c4b-c235b5e9ce1b" class="">Escolha Múltipla (4 valores)</blockquote><p id="25b473f0-be87-80b7-b3c5-d9fb1c3248dd" class="">
+</p><h2 id="25b473f0-be87-80a3-b13a-d1dcd1fb92ba" class="">3.1</h2><blockquote id="25b473f0-be87-80d0-bee4-df1de9b1ee64" class="">Qual é o processo correto para instalar e configurar o servidor Apache no Ubuntu Server?<br/>Assinale a opção que descreve corretamente os passos.</blockquote><p id="25b473f0-be87-807e-831e-ddfba5e04eb8" class=""><br/><strong>a)</strong><div class="indented"><ol type="1" id="25b473f0-be87-800a-a4f0-e9615fd60f96" class="numbered-list" start="1"><li>Instalar o Apache com o comando sudo apt install apache2.</li></ol><ol type="1" id="25b473f0-be87-80ac-adc0-e0d41c2b8b3b" class="numbered-list" start="2"><li>Editar o arquivo /etc/apache2/sites-available/000-default.conf para configurar o site.</li></ol><ol type="1" id="25b473f0-be87-80be-9a6d-fccda01dd3af" class="numbered-list" start="3"><li>Reiniciar o serviço Apache com o comando sudo systemctl restart apache2.</li></ol><ol type="1" id="25b473f0-be87-809f-9e11-df46aaedf61a" class="numbered-list" start="4"><li>Testar a configuração acessando o servidor com um navegador no endereço <a href="http://localhost/">http://localhost</a>.</li></ol></div></p><p id="25b473f0-be87-80f6-bf82-e0f0248bec8c" class="">
+</p><p id="25b473f0-be87-80dc-8ca1-f6c70e767aaf" class="">b) <div class="indented"><ol type="1" id="25b473f0-be87-80e2-9d28-cfbe47439197" class="numbered-list" start="1"><li>Instalar o Apache com o comando sudo apt-get install apache.</li></ol><ol type="1" id="25b473f0-be87-80de-9716-dd28520c524a" class="numbered-list" start="2"><li>Editar o arquivo /etc/apache2/apache2.conf para configurar o site.</li></ol><ol type="1" id="25b473f0-be87-8068-9f1d-cef84bcf1432" class="numbered-list" start="3"><li>Reiniciar o serviço Apache com o comando sudo systemctl stop apache2.</li></ol><ol type="1" id="25b473f0-be87-809d-822d-ff50e5103fc5" class="numbered-list" start="4"><li>Testar a configuração acessando o servidor com um navegador no endereço <a href="http://127.0.0.1/">http://127.0.0.1</a>.</li></ol></div></p><p id="25b473f0-be87-80d0-a6e9-c63ca87ff59b" class="">
+</p><p id="25b473f0-be87-80d7-be6c-ebe0f4d83b9d" class="">c) <div class="indented"><ol type="1" id="25b473f0-be87-80da-966b-f283fe7663d6" class="numbered-list" start="1"><li>Instalar o Apache com o comando sudo apt install apache2.</li></ol><ol type="1" id="25b473f0-be87-809b-abdc-e72d1becdfb3" class="numbered-list" start="2"><li>Editar o arquivo /etc/apache2/sites-available/000-default.conf para configurar o site.</li></ol><ol type="1" id="25b473f0-be87-804f-a4e7-dea26a423955" class="numbered-list" start="3"><li>Reiniciar o serviço Apache com o comando sudo systemctl restart apache2.</li></ol><ol type="1" id="25b473f0-be87-807b-91df-f2d070f3beb4" class="numbered-list" start="4"><li>Testar a configuração acessando o servidor com um navegador no endereço <a href="http://127.0.0.1/">http://127.0.0.1</a>.</li></ol></div></p><p id="25b473f0-be87-803b-b538-f7ad06fae3a1" class="">
+</p><p id="25b473f0-be87-80f8-bdc0-daa8a8d264eb" class="">d) <div class="indented"><ol type="1" id="25b473f0-be87-803c-aa2c-f3c21f6e142c" class="numbered-list" start="1"><li>Instalar o Apache com o comando sudo apt-get apache2.</li></ol><ol type="1" id="25b473f0-be87-8057-a054-d82a648bed92" class="numbered-list" start="2"><li>Editar o arquivo /etc/apache2/sites-enabled/000-default.conf para configurar o site.</li></ol><ol type="1" id="25b473f0-be87-80e0-9508-f73ec5d0ba4c" class="numbered-list" start="3"><li>Reiniciar o serviço Apache com o comando sudo service apache2 start.</li></ol><ol type="1" id="25b473f0-be87-80db-bdee-e331bb7df7f3" class="numbered-list" start="4"><li>Testar a configuração acessando o servidor com um navegador no endereço <a href="http://localhost/">http://localhost</a>.</li></ol></div></p><p id="25b473f0-be87-804c-b7cf-d9ef2093dbe6" class="">RESPOSTA: Opção c)</blockquote><p id="25b473f0-be87-8078-88f3-d5c195c2d285" class="">
+</p><p id="25b473f0-be87-8039-ad5f-d106eadec676" class="">
+</p><h2 id="25b473f0-be87-800a-a224-c2bd2eb340e8" class="">3.2</h2><blockquote id="25b473f0-be87-8005-a464-ca3553705749" class="">O que faz o comando systemctl enable apache2?</blockquote><p id="25b473f0-be87-8062-b7b5-ee0d8fbebde5" class="">
+</p><p id="25b473f0-be87-8060-96e8-d4922815bbd9" class="">a) Reinicia o serviço Apache2.<br/>b) Ativa o serviço Apache2 para iniciar automaticamente no arranque.<br/>c) Mostra o estado atual do Apache2.<br/>d) Instala o serviço Apache2.</p><p id="25b473f0-be87-80bb-9a47-c543dc20ed8c" class="">
+</p><blockquote id="25b473f0-be87-8025-adaa-c4b2fc185b16" class="">RESPOSTA: Opção b)</blockquote><p id="25b473f0-be87-80d3-9997-feac3b624400" class="">
+</p><h2 id="25b473f0-be87-809d-9076-e8e3030baa44" class="">3.3</h2><blockquote id="25b473f0-be87-8088-8406-f702ddfa7a7d" class="">Qual a principal função do servidor DHCP no laboratório?</blockquote><p id="25b473f0-be87-800d-8d2c-d73e2f0dbcbe" class="">
+</p><p id="25b473f0-be87-8020-90f5-e7685c780f80" class="">a) Monitorizar serviços de rede.<br/>b) Atribuir endereços IP automaticamente aos clientes.<br/>c) Gerir backups do sistema.<br/>d) Servir como servidor DNS.</p><p id="25b473f0-be87-80cd-bf0a-cbae76050231" class="">
+</p><blockquote id="25b473f0-be87-8099-91b1-e39df2a3080e" class="">RESPOSTA: Opção b)</blockquote><p id="25b473f0-be87-8039-a8ed-d7adf4c48b3d" class="">
+</p><p id="25b473f0-be87-803b-a264-ed1ff154eb45" class="">
+</p><h2 id="25b473f0-be87-80db-9725-feb7046e222e" class="">3.4</h2><blockquote id="25b473f0-be87-8087-b09a-f12cb017a6d7" class="">O que faz o comando ufw allow 22/tcp no Ubuntu Server?</blockquote><p id="25b473f0-be87-8022-8f71-f23be06067a7" class="">
+</p><p id="25b473f0-be87-801f-b024-e1d4ae530ed1" class="">a) Abre a porta 22 para todos os protocolos.<br/>b) Permite tráfego TCP na porta 22, usado para SSH.<br/>c) Configura o SSH para iniciar automaticamente no arranque.<br/>d) Bloqueia a porta 22 para o tráfego externo.</p><p id="25b473f0-be87-80f5-a76a-ea31411c923c" class="">
+</p><blockquote id="25b473f0-be87-804a-8035-d9518f102daa" class="">RESPOSTA: Opção b)</blockquote><p id="25c473f0-be87-8062-87e6-e6821f8ec029" class="">
+</p><p id="25c473f0-be87-8054-a42a-e80b957282dc" class="">
+</p><hr id="25b473f0-be87-80fc-93be-d072cbf3aeaf"/><hr id="25c473f0-be87-8079-9711-e40274df0934"/><h1 id="25c473f0-be87-8060-82bb-e65db46000ae" class="">Extras: Ubuntu Desktop</h1><figure id="25c473f0-be87-8034-bd10-d75a3f1ddb2d" class="image"><a href="image20.png"><img style="width:1090.7874755859375px" src="image20.png"/></a></figure><p id="25c473f0-be87-802d-a1ad-c3520f22ce87" class="">
+</p><h1 id="25c473f0-be87-80a1-88d8-e52f22d01018" class="">Extra: pfSense</h1><figure id="25c473f0-be87-8043-820c-d145bd2c0833" class="image"><a href="image21.png"><img style="width:1090.7750244140625px" src="image21.png"/></a></figure><p id="25c473f0-be87-80d1-985a-fb3cec9c1138" class="">
+</p><figure id="25c473f0-be87-80aa-9c5d-fb49af056979" class="image"><a href="image22.png"><img style="width:1090.7874755859375px" src="image22.png"/></a></figure></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
